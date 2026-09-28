@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#080817" />
+<title>A Little World for Zainab 🐱🐭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+  <div class="grain"></div>
+  <div class="stars" id="stars"></div>
+
+  <main>
+    <section class="scene active" id="scene-entry">
+      <div class="moon"></div>
+      <div class="intro-copy">
+        <span class="eyebrow">a tiny place made for you</span>
+        <h1>Hey, Zainab<span>…</span></h1>
+        <p>Your brain is doing too much again, huh?</p>
+        <button class="primary" data-next="scene-overthink">✨ Take me somewhere else</button>
+      </div>
+      <div class="character-stage opening-stage">
+        <img class="gif gif-chase" alt="Tom and Jerry chasing" src="https://media.giphy.com/media/aeJ3ZBRLYqTp8B3Ocn/giphy.gif">
+        <div class="floor-glow"></div>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-overthink">
+      <div class="scene-head">
+        <span class="eyebrow">01 · let's deal with that brain</span>
+        <h2>Okay… hand me<br><em>one thought.</em></h2>
+        <p>Tap the thoughts. Let them disappear.</p>
+      </div>
+      <div class="thought-world" id="thoughtWorld">
+        <button class="thought t1">what if I can't do it?</button>
+        <button class="thought t2">I still have so much to study…</button>
+        <button class="thought t3">I should've started earlier.</button>
+        <button class="thought t4">but what if something goes wrong?</button>
+        <img class="gif overthink-gif" alt="Tom and Jerry reaction" src="https://media.giphy.com/media/pJ7a5L8dfu22LaGslW/giphy.gif">
+      </div>
+      <div class="score"><span>OVERTHINKING</span><b id="score">4</b><i>thoughts left</i></div>
+      <div class="scene-footer"><button class="ghost" data-next="scene-music">Enough. Show me something nice →</button></div>
+    </section>
+
+    <section class="scene music-scene" id="scene-music">
+      <div class="scene-head">
+        <span class="eyebrow">02 · your little escape</span>
+        <h2>Pick a world.<br><em>I'll handle the rest.</em></h2>
+      </div>
+      <div class="music-world" id="musicWorld">
+        <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+        <div class="music-art art-iktara">
+          <div class="stars-mini"></div>
+          <img class="png-character" alt="Tom and Jerry" src="https://pngimg.com/uploads/tom_and_jerry/tom_and_jerry_PNG50.png">
+        </div>
+      </div>
+      <div class="song-row">
+        <button class="song active-song" data-world="iktara"><span>01</span><strong>Iktara</strong><small>stars · rooftop · slow</small></button>
+        <button class="song" data-world="parinday"><span>02</span><strong>Khaabon Ke Parinday</strong><small>clouds · flying · free</small></button>
+        <button class="song" data-world="love"><span>03</span><strong>Love You Zindagi</strong><small>sunshine · silly · happy</small></button>
+        <button class="song" data-world="ilahi"><span>04</span><strong>Ilahi</strong><small>mountains · road · adventure</small></button>
+      </div>
+      <div class="scene-footer"><button class="ghost" data-next="scene-open">Open when… →</button></div>
+    </section>
+
+    <section class="scene" id="scene-open">
+      <div class="scene-head">
+        <span class="eyebrow">03 · tiny emergency envelopes</span>
+        <h2>Open one when<br><em>you need me.</em></h2>
+      </div>
+      <div class="envelopes">
+        <button class="envelope" data-message="You don't have to solve every thought tonight. Come here. Breathe. 🌙"><span>🌙</span><b>overthinking</b></button>
+        <button class="envelope" data-message="Study can wait for five minutes. You are allowed to exist without being productive. 🫶"><span>📚</span><b>studies are killing me</b></button>
+        <button class="envelope" data-message="No fixing. No advice. Just a reminder: I'm still here. 💌"><span>💌</span><b>miss you</b></button>
+        <button class="envelope" data-message="Okay madam. Enough. We are officially bullying the bad mood now. 😂"><span>😂</span><b>need a smile</b></button>
+      </div>
+      <div class="message-card" id="messageCard"><div class="message-close">×</div><span>from your favorite human</span><p id="messageText"></p></div>
+      <div class="scene-footer"><button class="ghost" data-next="scene-game">One more thing →</button></div>
+    </section>
+
+    <section class="scene game-scene" id="scene-game">
+      <div class="scene-head">
+        <span class="eyebrow">04 · 60 seconds</span>
+        <h2>Kill the<br><em>overthinking.</em></h2>
+        <p>Tap the nonsense before it multiplies.</p>
+      </div>
+      <div class="game-area" id="gameArea">
+        <div class="game-score">ZAINAB <b id="gameScore">0</b> · BRAIN <b id="brainScore">0</b></div>
+        <div class="game-character"><img src="https://pngimg.com/uploads/tom_and_jerry/tom_and_jerry_PNG53.png" alt="Tom and Jerry"></div>
+        <button class="bubble b1">WHAT IF…?</button>
+        <button class="bubble b2">I SHOULD…</button>
+        <button class="bubble b3">I'M BEHIND…</button>
+        <button class="bubble b4">BUT WHAT IF…?</button>
+      </div>
+      <button class="primary small" id="startGame">Start the 60 second chaos 💥</button>
+      <div class="scene-footer"><button class="ghost" data-next="scene-final">I'm done bullying my brain →</button></div>
+    </section>
+
+    <section class="scene final-scene" id="scene-final">
+      <div class="moon large"></div>
+      <div class="final-character">
+        <img src="https://pngimg.com/uploads/tom_and_jerry/tom_and_jerry_PNG48.png" alt="Tom and Jerry">
+      </div>
+      <div class="final-copy">
+        <span class="eyebrow">05 · for now</span>
+        <h2>You don't have to<br>solve everything <em>tonight.</em></h2>
+        <p>Tomorrow can handle tomorrow.</p>
+        <button class="primary" id="breathe">🌙 I'm okay now</button>
+      </div>
+      <div class="goodnight" id="goodnight">Goodnight, overthinker. 🫶</div>
+    </section>
+  </main>
+
+  <div class="progress"><span id="progressBar"></span></div>
+  <button class="sound" id="soundBtn" aria-label="sound">♪</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# A Little World for Zainab
+
+A mobile-first cinematic React experience — an interactive short film made for one person.
+
+## Run
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL Vite prints (usually `http://localhost:5173`).
+
+If the page stays blank, stop the old dev server and start it again so Vite picks up `vite.config.js`.
+
+## Music
+
+Drop files into `public/audio/`:
+
+- `ilahi.mp3`
+- `iktara.mp3`
+- `khaabon-ke-parinday.mp3`
+- `love-you-zindagi.mp3`
+
+Until those exist, each world plays a small generative piece instead (the site checks which files exist when sound is first unlocked, so the fallback starts instantly). A song's `file` in `src/data/content.js` can also be an absolute path (`/music/x.mp3`) or a full URL.
+
+## Assets
+
+Tom & Jerry PNGs live in `public/characters/`. Looping clips live in `public/clips/` (MP4, not GIF). Source terms: PNGimg (CC BY-NC 4.0) and Giphy. Check before redistributing.

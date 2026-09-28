@@ -1,0 +1,288 @@
+.ot {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  padding: calc(22px + var(--safe-t)) 18px calc(22px + var(--safe-b));
+  display: flex;
+  flex-direction: column;
+}
+.ot::before {
+  /* the inside of a head: a soft bruised glow that fades when calm */
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(60% 40% at 30% 30%, rgba(120, 70, 160, 0.22), transparent 70%),
+    radial-gradient(50% 40% at 75% 70%, rgba(240, 140, 120, 0.12), transparent 70%);
+  animation: ot-throb 4s ease-in-out infinite;
+  transition: opacity 3s ease;
+  pointer-events: none;
+}
+.ot.is-done::before {
+  opacity: 0.15;
+}
+@keyframes ot-throb {
+  50% {
+    transform: scale(1.06);
+    opacity: 0.7;
+  }
+}
+
+.ot-echoes {
+  position: absolute;
+  inset: 110px 0 140px;
+  pointer-events: none;
+}
+.ot-echo {
+  position: absolute;
+  top: calc(8% + var(--i) * 7.2%);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(246, 236, 217, 0.13);
+  white-space: nowrap;
+  animation: ot-drift 14s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1.7s);
+}
+.ot-echo:nth-child(3n) {
+  left: 58%;
+}
+.ot-echo:nth-child(3n + 1) {
+  left: 8%;
+}
+.ot-echo:nth-child(3n + 2) {
+  left: 34%;
+}
+.ot-echo:nth-child(4n) {
+  font-size: 18px;
+}
+@keyframes ot-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(18px, -14px);
+  }
+}
+
+.ot-hud {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.ot-count {
+  margin: 6px 0 0;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 350;
+  color: var(--cream-2);
+}
+.ot-count b {
+  display: inline-block;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--gold);
+  min-width: 0.7em;
+}
+.ot-quip {
+  min-height: 1.4em;
+  font-family: var(--hand);
+  font-size: 22px;
+  color: var(--peach);
+  animation: ot-quip 1.8s ease-out both;
+}
+@keyframes ot-quip {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) rotate(-4deg);
+  }
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.tcloud {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  margin: 10px 0 120px;
+  touch-action: pan-y;
+}
+.thought {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.thought__body {
+  position: relative;
+  display: block;
+  padding: 16px 20px;
+  max-width: 230px;
+  border-radius: 58% 42% 55% 45% / 52% 60% 40% 48%;
+  background: radial-gradient(120% 120% at 30% 20%, #221c40, #120f26 70%);
+  box-shadow:
+    0 0 0 1.5px rgba(246, 236, 217, 0.55) inset,
+    0 0 30px -4px rgba(185, 168, 232, 0.35),
+    0 20px 40px -10px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+.thought__text {
+  position: relative;
+  z-index: 1;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 350;
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--cream);
+}
+.thought--lg .thought__body {
+  padding: 20px 24px;
+  max-width: 250px;
+}
+.thought--lg .thought__text {
+  font-size: 22px;
+}
+.thought--sm .thought__text {
+  font-size: 15px;
+}
+.thought__tail {
+  position: absolute;
+  border-radius: 50%;
+  background: #15122b;
+  box-shadow: 0 0 0 1.5px rgba(246, 236, 217, 0.5) inset;
+}
+.thought__tail--1 {
+  width: 16px;
+  height: 14px;
+  left: 18%;
+  bottom: -14px;
+}
+.thought__tail--2 {
+  width: 9px;
+  height: 8px;
+  left: 11%;
+  bottom: -26px;
+}
+.thought__cracks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.thought__crack {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px rgba(243, 207, 138, 0.9));
+}
+
+.ot-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(28px + var(--safe-b));
+  text-align: center;
+  z-index: 12;
+  margin: 0;
+}
+
+.ot-tom {
+  width: min(44vw, 220px);
+  right: -6%;
+  bottom: -9%;
+  z-index: 8;
+  rotate: -8deg;
+}
+.ot.is-done .ot-tom {
+  rotate: -4deg;
+  transition: rotate 1s ease;
+}
+
+.ot-after {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 28px 80px;
+  pointer-events: none;
+}
+.ot-lines {
+  display: grid;
+  gap: 12px;
+}
+.ot-lines .tseq__line {
+  font-family: var(--serif);
+  font-weight: 330;
+  font-size: clamp(20px, 5.6vw, 30px);
+  line-height: 1.2;
+  color: var(--cream-2);
+}
+.ot-lines .tseq__line.is-big {
+  font-size: clamp(32px, 9vw, 60px);
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+.ot-lines .tseq__line:nth-child(2) {
+  font-style: italic;
+  color: var(--gold);
+  max-width: 14ch;
+}
+.ot-cta {
+  margin-top: 30px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ot-cta.is-in {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (min-width: 900px) {
+  .ot {
+    padding: 36px 8vw;
+  }
+  .tcloud {
+    margin: 20px 6vw 80px;
+  }
+  .thought__text {
+    font-size: 22px;
+  }
+  .thought--lg .thought__text {
+    font-size: 30px;
+  }
+  .thought__body {
+    max-width: 340px;
+    padding: 22px 30px;
+  }
+  .ot-tom {
+    width: 260px;
+    right: 4%;
+  }
+  .ot-after {
+    padding-left: 10vw;
+  }
+}

@@ -1,0 +1,160 @@
+.interlude {
+  min-height: 78svh;
+}
+.il {
+  position: relative;
+  min-height: 78svh;
+  display: grid;
+  place-items: center;
+  padding: 0 28px;
+}
+.il-text {
+  position: relative;
+  z-index: 2;
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(28px, 8.2vw, 58px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-align: center;
+  color: var(--cream);
+}
+.il-w {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* notes */
+.il-notes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.il-note {
+  position: absolute;
+  left: calc(8% + var(--i) * 15%);
+  font-size: calc(18px + var(--i) * 3px);
+  color: var(--lav);
+  opacity: 0.55;
+  animation: il-note 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1.1s);
+}
+@keyframes il-note {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+  }
+  50% {
+    transform: translateY(-22px) rotate(10deg);
+  }
+}
+
+/* film reel — a horizontal moment */
+.il-reel-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  overflow: hidden;
+  transform: rotate(-6deg);
+  opacity: 0.55;
+}
+.il-reel {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  padding: 16px 10px;
+  background:
+    radial-gradient(circle at 50% 50%, #05050d 4px, transparent 4.5px) 0 5px / 22px 12px repeat-x,
+    radial-gradient(circle at 50% 50%, #05050d 4px, transparent 4.5px) 0 calc(100% - 5px) / 22px 12px repeat-x,
+    #1c1a2c;
+}
+.il-frame {
+  width: 120px;
+  height: 90px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, #e9dcc0, #a4957c);
+  overflow: hidden;
+}
+.il-frame img {
+  height: 86%;
+  width: auto;
+  filter: sepia(0.6) contrast(1.05) brightness(0.9);
+}
+
+/* paper plane */
+.il-plane {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 64px;
+  z-index: 3;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.4));
+}
+
+/* peeking jerry */
+.il-jerry {
+  position: absolute;
+  right: 0;
+  bottom: 12%;
+  width: min(34vw, 180px);
+  z-index: 3;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5)) brightness(0.9);
+}
+
+/* loud */
+.il-bangs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.il-bang {
+  position: absolute;
+  font-family: var(--sans);
+  font-weight: 700;
+  color: var(--peach);
+  font-size: 34px;
+}
+.il-bang:nth-child(1) {
+  left: 12%;
+  top: 22%;
+}
+.il-bang:nth-child(2) {
+  right: 12%;
+  top: 30%;
+  color: var(--gold);
+  font-size: 44px;
+}
+.il-bang:nth-child(3) {
+  left: 22%;
+  bottom: 22%;
+  color: var(--lav);
+}
+
+/* late */
+.il-moonlet {
+  position: absolute;
+  top: 16%;
+  right: 16%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: inset -9px 3px 0 0 #efe8ff;
+  filter: drop-shadow(0 0 14px rgba(233, 228, 255, 0.6));
+}
+
+@media (min-width: 900px) {
+  .il-text {
+    max-width: 22ch;
+  }
+  .il-frame {
+    width: 180px;
+    height: 130px;
+  }
+}

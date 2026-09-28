@@ -1,0 +1,144 @@
+.ko-wrap {
+  position: relative;
+  min-height: 100svh;
+  padding: calc(28px + var(--safe-t)) 18px calc(20px + var(--safe-b));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.ko-title {
+  font-size: clamp(40px, 11vw, 72px);
+  margin: 8px 0 0;
+}
+.ko-tom.char {
+  width: min(50vw, 260px);
+  right: -8%;
+  bottom: 6%;
+  z-index: 1;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.mg {
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+}
+.mg-hud {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+  z-index: 4;
+}
+.mg-score {
+  margin: 10px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--cream-3);
+}
+.mg-score b {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: 0;
+  color: var(--cream);
+  font-weight: 400;
+  padding: 0 4px;
+}
+.mg-score b.is-gold {
+  color: var(--gold);
+}
+.mg-time {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--peach);
+}
+.mg-time small {
+  font-size: 14px;
+  color: var(--cream-3);
+}
+.mg-quip {
+  min-height: 1.2em;
+  font-family: var(--hand);
+  font-size: 22px;
+  color: var(--peach);
+  animation: ot-quip 1.4s ease-out both;
+}
+.mg-area {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+.mg-bub {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff1dc;
+  color: #201b28;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  white-space: nowrap;
+  will-change: transform;
+}
+.mg-start,
+.mg-end {
+  position: absolute;
+  inset: auto 0 18%;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  z-index: 5;
+}
+.mg-end {
+  inset: 28% 18px auto;
+  text-align: left;
+}
+.mg-lines {
+  display: grid;
+  gap: 10px;
+}
+.mg-lines .tseq__line {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(18px, 4.8vw, 24px);
+  color: var(--cream-2);
+}
+.mg-lines .tseq__line.is-big {
+  font-size: clamp(26px, 7.4vw, 42px);
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+.mg-cta {
+  margin-top: 22px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mg-cta.is-in {
+  opacity: 1;
+  transform: none;
+}
+.mg.is-on .ko-tom,
+.mg.is-ended .mg-start {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .ko-wrap {
+    padding-left: 8vw;
+    padding-right: 8vw;
+  }
+  .mg-bub {
+    font-size: 14px;
+    padding: 12px 18px;
+  }
+}
