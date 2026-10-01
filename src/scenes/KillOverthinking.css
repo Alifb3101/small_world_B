@@ -118,6 +118,9 @@
   letter-spacing: -0.02em;
 }
 .mg-cta {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
   margin-top: 22px;
   opacity: 0;
   transform: translateY(12px);

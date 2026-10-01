@@ -4,6 +4,7 @@ import CartoonMoment from '../components/CartoonMoment';
 import MagneticButton from '../components/MagneticButton';
 import AnimatedText from '../components/AnimatedText';
 import { goTo } from '../lib/director';
+import { CARTOON } from '../data/content';
 import './TomJerryMoment.css';
 
 export default function TomJerryMoment() {
@@ -13,11 +14,11 @@ export default function TomJerryMoment() {
     <Scene id="tomjerry" theme="cartoon" camera="drift" className="tj" label="A tiny cartoon">
       <div className="tj-wrap">
         <header className="tj-head">
-          <span className="eyebrow">a very old argument</span>
+          <span className="eyebrow">{CARTOON.corner}</span>
           <AnimatedText
             as="h2"
             className="h-serif tj-title"
-            text="He’s been chasing him since 1940."
+            text={CARTOON.title}
             split="words"
             variant="blur"
             play
@@ -26,7 +27,7 @@ export default function TomJerryMoment() {
         <CartoonMoment onTruce={() => setTruce(true)} />
         <div className={`tj-cta ${truce ? 'is-in' : 'is-soft'}`}>
           <MagneticButton variant="ghost" onClick={() => goTo('openwhen', 'paper')} sound="paper">
-            okay. something quieter →
+            {CARTOON.next}
           </MagneticButton>
         </div>
       </div>

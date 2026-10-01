@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import Scene from '../components/Scene';
 import { Envelope, OpenWhenCard } from '../components/Envelope';
 import MagneticButton from '../components/MagneticButton';
-import { LETTERS } from '../data/content';
+import { OPEN_WHEN } from '../data/content';
 import { goTo } from '../lib/director';
 import { sfx } from '../lib/audio';
 import { fx } from '../lib/fx';
@@ -28,23 +28,23 @@ export default function OpenWhen() {
     <Scene id="openwhen" theme="openwhen" camera="rise" className="ow" label="Open when">
       <div className="ow-wrap">
         <header className="ow-head">
-          <span className="eyebrow">tiny emergency mail</span>
+          <span className="eyebrow">{OPEN_WHEN.corner}</span>
           <h2 className="h-serif ow-title">
-            Open one when
+            {OPEN_WHEN.title}
             <br />
-            <em>you need it.</em>
+            <em>{OPEN_WHEN.titleFancy}</em>
           </h2>
         </header>
 
         <div className="ow-pile">
-          {LETTERS.map((letter, i) => (
+          {OPEN_WHEN.letters.map((letter, i) => (
             <Envelope key={letter.id} letter={letter} index={i} onOpen={pick} />
           ))}
         </div>
 
         <div className="ow-foot">
           <MagneticButton variant="link" onClick={() => goTo('game', 'dream')}>
-            okay. one more thing →
+            {OPEN_WHEN.next}
           </MagneticButton>
         </div>
       </div>

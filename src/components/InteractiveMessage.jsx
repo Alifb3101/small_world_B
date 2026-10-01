@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { fx } from '../lib/fx';
 import { sfx } from '../lib/audio';
 import { sky } from '../lib/sky';
-import { SECRET_LINES } from '../data/content';
+import { MESSAGE } from '../data/content';
 import { buzz } from '../lib/motion';
+import { goTo } from '../lib/director';
 import TextSequence from './TextSequence';
+import MagneticButton from './MagneticButton';
 
 /**
  * A tiny glowing thing in the dark. Tap it. It opens. Then it tells the truth.
@@ -36,11 +38,18 @@ export default function InteractiveMessage() {
         <button type="button" className="im-glow" onClick={reveal} data-nofx aria-label="A small glowing thing. Tap it.">
           <span className="im-core" />
           <span className="im-halo" />
-          <span className="im-hint">something’s here</span>
+          <span className="im-hint">{MESSAGE.glowHint}</span>
         </button>
       )}
       {open && (
-        <TextSequence lines={SECRET_LINES} play dimPast className="im-lines" onDone={() => setDone(true)} />
+        <TextSequence lines={MESSAGE.lines} play dimPast className="im-lines" onDone={() => setDone(true)} />
+      )}
+      {open && (
+        <div className={`im-cta ${done ? 'is-in' : ''}`}>
+          <MagneticButton variant="link" onClick={() => goTo('final', 'night')} sound="soft">
+            {MESSAGE.next}
+          </MagneticButton>
+        </div>
       )}
     </div>
   );

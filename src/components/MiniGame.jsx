@@ -2,18 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from '../lib/gsap';
 import { fx } from '../lib/fx';
 import { sfx } from '../lib/audio';
-import { GAME_WORDS, GAME_QUIPS } from '../data/content';
+import { GAME } from '../data/content';
 import { buzz, pick, rand, REDUCED } from '../lib/motion';
 import { useScene } from './Scene';
 import { lockScroll } from '../lib/director';
 import MagneticButton from './MagneticButton';
 import TextSequence from './TextSequence';
 
-const END = [
-  { text: 'You successfully bullied your brain for 60 seconds.', hold: 1600, big: true },
-  { text: 'Honestly?', hold: 900 },
-  { text: 'Your brain needs a timeout.', hold: 800 },
-];
+const { words: GAME_WORDS, quips: GAME_QUIPS, end: END } = GAME;
 
 let uid = 1;
 
@@ -21,7 +17,7 @@ let uid = 1;
  * Sixty seconds of tapping attacking thoughts.
  * Not a productivity tool. A tiny tantrum, on purpose.
  */
-export default function MiniGame({ onSong }) {
+export default function MiniGame({ onSong, onNext }) {
   const { inView } = useScene();
   const area = useRef(null);
   const items = useRef([]);
@@ -188,9 +184,9 @@ export default function MiniGame({ onSong }) {
     <div className={`mg ${playing ? 'is-on' : ''} ${ended ? 'is-ended' : ''}`}>
       <div className="mg-hud">
         <p className="mg-score">
-          OVERTHINKING <b>{brain}</b>
+          {GAME.scoreBrain} <b>{brain}</b>
           <span aria-hidden="true"> · </span>
-          ZAINAB <b className="is-gold">{zainab}</b>
+          {GAME.scoreYou} <b className="is-gold">{zainab}</b>
         </p>
         {playing && (
           <p className="mg-time">
@@ -208,9 +204,14 @@ export default function MiniGame({ onSong }) {
       {!playing && !ended && (
         <div className="mg-start">
           <MagneticButton onClick={start} sound="thump">
-            Start the 60 second chaos
+            {GAME.startButton}
           </MagneticButton>
-          <p className="hint">tap the nonsense before it multiplies.</p>
+          <p className="hint">{GAME.hint}</p>
+          {onNext && (
+            <MagneticButton variant="link" onClick={onNext} sound="soft">
+              {GAME.skip}
+            </MagneticButton>
+          )}
         </div>
       )}
 
@@ -219,8 +220,13 @@ export default function MiniGame({ onSong }) {
           <TextSequence lines={END} play onDone={() => setCta(true)} className="mg-lines" dimPast />
           <div className={`mg-cta ${cta ? 'is-in' : ''}`}>
             <MagneticButton onClick={onSong} sound="sparkle">
-              🎧 One song?
+              {GAME.button}
             </MagneticButton>
+            {onNext && (
+              <MagneticButton variant="link" onClick={onNext} sound="soft">
+                {GAME.next}
+              </MagneticButton>
+            )}
           </div>
         </div>
       )}

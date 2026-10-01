@@ -24,6 +24,12 @@ Drop files into `public/audio/`:
 
 Until those exist, each world plays a small generative piece instead (the site checks which files exist when sound is first unlocked, so the fallback starts instantly). A song's `file` in `src/data/content.js` can also be an absolute path (`/music/x.mp3`) or a full URL.
 
+The "🎲 Surprise me" button picks from those four plus anything in `MUSIC.surprise` in `src/data/content.js` — add an entry there (and its mp3 in `public/audio/`) for each extra song.
+
+## Heart reel
+
+The "When your heart is confusing you" letter plays `public/clips/heart-reel.mp4`. Until that file exists, the letter shows just the text.
+
 ## Assets
 
 Tom & Jerry PNGs live in `public/characters/`. Looping clips live in `public/clips/` (MP4, not GIF). Source terms: PNGimg (CC BY-NC 4.0) and Giphy. Check before redistributing.

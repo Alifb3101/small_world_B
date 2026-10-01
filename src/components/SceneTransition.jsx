@@ -5,6 +5,7 @@ import { sky } from '../lib/sky';
 import { fx } from '../lib/fx';
 import { sfx } from '../lib/audio';
 import { charSrc } from './Character';
+import { OPEN_WHEN } from '../data/content';
 import './SceneTransition.css';
 
 const CLEAR = { clearProps: 'transform,opacity,filter' };
@@ -188,7 +189,7 @@ export default function SceneTransition() {
       </div>
       <div className="tx-persp">
         <div className="tx-layer tx-paper">
-          <span className="tx-paper__note">some things are better on paper.</span>
+          <span className="tx-paper__note">{OPEN_WHEN.paperNote}</span>
           <span className="tx-paper__shade" />
           <span className="tx-paper__curl" />
         </div>

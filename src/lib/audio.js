@@ -1,5 +1,5 @@
 import { createStore } from './store';
-import { SONGS } from '../data/content';
+import { PLAYLIST } from '../data/content';
 
 /**
  * Tiny Web Audio engine.
@@ -107,7 +107,7 @@ const srcOf = (file) => (isExternal(file) || file.startsWith('/') ? file : `/aud
 const available = {};
 
 function probeSongs() {
-  SONGS.forEach(({ file }) => {
+  PLAYLIST.forEach(({ file }) => {
     if (!file || isExternal(file) || file in available) return;
     available[file] = undefined;
     fetch(srcOf(file), { method: 'HEAD', cache: 'no-store' })

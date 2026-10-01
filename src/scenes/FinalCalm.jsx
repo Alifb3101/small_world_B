@@ -3,7 +3,7 @@ import Scene, { useScene } from '../components/Scene';
 import Character from '../components/Character';
 import MagneticButton from '../components/MagneticButton';
 import TextSequence from '../components/TextSequence';
-import { FINAL_LINES } from '../data/content';
+import { FINAL } from '../data/content';
 import { sky } from '../lib/sky';
 import { story } from '../lib/store';
 import { sfx, setAmbience } from '../lib/audio';
@@ -11,7 +11,7 @@ import { gsap } from '../lib/gsap';
 import { fx } from '../lib/fx';
 import './FinalCalm.css';
 
-const BREATHE = [{ text: 'Breathe.', hold: 1200, big: true, className: 'fc-breathe' }];
+const BREATHE = [{ text: FINAL.breathe, hold: 1200, big: true, className: 'fc-breathe' }];
 
 export default function FinalCalm() {
   return (
@@ -44,19 +44,19 @@ function FinalContent() {
     <div className={`fc-wrap ${still ? 'is-still' : ''}`}>
       <span className="fc-moon" aria-hidden="true" />
       <span className="fc-haze" aria-hidden="true" />
-      <Character name="together-lazy" className="fc-art" idle={still ? 'none' : 'breathe'} shadow={false} />
+      <Character name="together-lazy-2" className="fc-art" idle={still ? 'none' : 'breathe'} shadow={false} />
 
       <div className="fc-copy">
-        <TextSequence lines={FINAL_LINES} play={inView} dimPast className="fc-lines" onDone={() => setPhase(1)} />
+        <TextSequence lines={FINAL.lines} play={inView} dimPast className="fc-lines" onDone={() => setPhase(1)} />
         {phase >= 1 && <TextSequence lines={BREATHE} play className="fc-lines" onDone={() => setPhase(2)} />}
         {phase >= 2 && !still && (
           <div className="fc-cta">
             <MagneticButton onClick={ok} sound="chime">
-              I’m okay now 🌙
+              {FINAL.button}
             </MagneticButton>
           </div>
         )}
-        {still && <p className="fc-night">Goodnight, overthinker. 🫶</p>}
+        {still && <p className="fc-night">{FINAL.goodnight}</p>}
       </div>
     </div>
   );

@@ -20,9 +20,12 @@ import { lockScroll } from './lib/director';
 import { story } from './lib/store';
 import { ScrollTrigger } from './lib/gsap';
 import { warmAssets } from './lib/preload';
+import { MUSIC, CARTOON, OPEN_WHEN, GAME, TODAY, MESSAGE } from './data/content';
 
 export default function App() {
   useEffect(() => {
+    // slides only change through buttons (goTo), never by user scrolling
+    lockScroll(true, 'slides');
     if (!story.get().entered) lockScroll(true, 'intro');
     const onDown = (e) => {
       if (e.target.closest?.('[data-nofx]')) return;
@@ -66,17 +69,17 @@ export default function App() {
       <main className="story">
         <Arrival />
         <Overthinking />
-        <Interlude id="i-notes" theme="notes" variant="notes" text="Quieter in there now. Let’s make some noise. The good kind." />
+        <Interlude id="i-notes" theme="notes" variant="notes" text={MUSIC.leadIn} />
         <MusicEscape />
-        <Interlude id="i-reel" theme="reel" variant="reel" text="Meanwhile, somewhere in a very old cartoon…" />
+        <Interlude id="i-reel" theme="reel" variant="reel" text={CARTOON.leadIn} />
         <TomJerryMoment />
-        <Interlude id="i-paper" theme="paper" variant="plane" text="Some things are better said on paper." />
+        <Interlude id="i-paper" theme="paper" variant="plane" text={OPEN_WHEN.leadIn} />
         <OpenWhen />
-        <Interlude id="i-loud" theme="loud" variant="loud" text="Okay. This next one is a little loud." />
+        <Interlude id="i-loud" theme="loud" variant="loud" text={GAME.leadIn} />
         <KillOverthinking />
-        <Interlude id="i-small" theme="daily" variant="jerry" text="Meanwhile, in a very small world…" />
+        <Interlude id="i-small" theme="daily" variant="jerry" text={TODAY.leadIn} />
         <DailyWorld />
-        <Interlude id="i-late" theme="late" variant="late" text="Shh. It’s getting late." />
+        <Interlude id="i-late" theme="late" variant="late" text={MESSAGE.leadIn} />
         <PersonalMessage />
         <FinalCalm />
       </main>

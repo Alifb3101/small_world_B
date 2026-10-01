@@ -5,19 +5,14 @@ import TextSequence from '../components/TextSequence';
 import MagneticButton from '../components/MagneticButton';
 import Character from '../components/Character';
 import ParallaxLayer from '../components/ParallaxLayer';
-import { THOUGHTS, ECHOES, QUIPS } from '../data/content';
+import { OVERTHINKING } from '../data/content';
 import { gsap } from '../lib/gsap';
 import { setPose } from '../lib/pose';
 import { goTo } from '../lib/director';
 import { sfx } from '../lib/audio';
 import './Overthinking.css';
 
-const AFTER = [
-  { text: 'See?', hold: 1000, big: true },
-  { text: 'Not every thought deserves your attention.', hold: 1600, big: true },
-  { text: 'Come on.', hold: 600 },
-  { text: 'Let’s get out of your head for a minute.', hold: 500 },
-];
+const { thoughts: THOUGHTS, echoes: ECHOES, quips: QUIPS, after: AFTER } = OVERTHINKING;
 
 export default function Overthinking() {
   const [left, setLeft] = useState(THOUGHTS.length);
@@ -66,9 +61,9 @@ export default function Overthinking() {
         </ParallaxLayer>
 
         <header className="ot-hud" aria-live="polite">
-          <span className="eyebrow">inside your head</span>
+          <span className="eyebrow">{OVERTHINKING.corner}</span>
           <p className="ot-count">
-            <b ref={countRef}>{left}</b> {left === 1 ? 'thought' : 'thoughts'} left
+            <b ref={countRef}>{left}</b> {left === 1 ? OVERTHINKING.counterOne : OVERTHINKING.counterMany}
           </p>
           <span className="ot-quip" key={quip}>
             {quip}
@@ -77,7 +72,7 @@ export default function Overthinking() {
 
         <ThoughtCloud thoughts={THOUGHTS} onPop={onPop} nervous={THOUGHTS.length - left} />
 
-        <p className="ot-hint hint">tap a thought. or fling it.</p>
+        <p className="ot-hint hint">{OVERTHINKING.hint}</p>
 
         <Character
           ref={tom}
@@ -93,7 +88,7 @@ export default function Overthinking() {
             <TextSequence lines={AFTER} play onDone={() => setCta(true)} className="ot-lines" />
             <div className={`ot-cta ${cta ? 'is-in' : ''}`}>
               <MagneticButton onClick={() => goTo('music', 'collapse')} sound="soft">
-                Okay. Take me somewhere ✨
+                {OVERTHINKING.button}
               </MagneticButton>
             </div>
           </div>

@@ -10,6 +10,7 @@ import { REDUCED } from '../lib/motion';
 import { story } from '../lib/store';
 import { unlock, startAmbience, sfx } from '../lib/audio';
 import { goTo, lockScroll } from '../lib/director';
+import { ARRIVAL } from '../data/content';
 import './Arrival.css';
 
 const clock = () =>
@@ -78,7 +79,7 @@ export default function Arrival() {
     <Scene id="arrival" theme="arrival" camera="none" className="arrival" label="Arrival">
       <div className="arr" ref={root} onPointerDown={hurry}>
         <div className="arr-slate" aria-hidden="true">
-          <span className="eyebrow">a little world for zainab</span>
+          <span className="eyebrow">{ARRIVAL.corner}</span>
           <span className="eyebrow">{clock()}</span>
         </div>
 
@@ -86,7 +87,7 @@ export default function Arrival() {
           <div className="arr-halo" />
           <div className="arr-light" />
           <Character
-            name="together-lazy"
+            name="together-lazy-2"
             className="arr-art"
             idle="breathe"
             eager
@@ -95,16 +96,16 @@ export default function Arrival() {
             alt="Tom and Jerry, lying around, waiting for you"
           />
           <div className="arr-intro">
-            <AnimatedText as="p" text="A tiny place…" play={step >= 1} className="arr-line" stagger={0.06} />
-            <AnimatedText as="p" text="…made for you." play={step >= 2} className="arr-line arr-line--2" stagger={0.06} />
+            <AnimatedText as="p" text={ARRIVAL.intro[0]} play={step >= 1} className="arr-line" stagger={0.06} />
+            <AnimatedText as="p" text={ARRIVAL.intro[1]} play={step >= 2} className="arr-line arr-line--2" stagger={0.06} />
           </div>
         </div>
 
         <div className="arr-copy">
-          <AnimatedText as="h1" text="Hey, Zainab." play={step >= 3} className="arr-title h-serif" stagger={0.055} />
+          <AnimatedText as="h1" text={ARRIVAL.title} play={step >= 3} className="arr-title h-serif" stagger={0.055} />
           <AnimatedText
             as="p"
-            text="Your brain is doing too much again, huh?"
+            text={ARRIVAL.subtitle}
             split="words"
             variant="blur"
             play={step >= 4}
@@ -112,7 +113,7 @@ export default function Arrival() {
           />
           <div className={`arr-cta ${ready ? 'is-ready' : ''}`}>
             <MagneticButton onClick={enter} sound="sparkle">
-              ✨ Take me somewhere else
+              {ARRIVAL.button}
             </MagneticButton>
           </div>
         </div>

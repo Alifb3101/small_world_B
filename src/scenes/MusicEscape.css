@@ -164,7 +164,9 @@
   position: relative;
   margin-top: 28px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 /* ---------- inside a world ---------- */
@@ -345,6 +347,19 @@
   border: 0;
   border-left: 5px solid #17142a;
   border-right: 5px solid #17142a;
+}
+.me-surprise {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--cream);
+  background: rgba(8, 8, 22, 0.35);
+  box-shadow: 0 0 0 1px rgba(246, 236, 217, 0.28) inset;
+  transition: transform 0.25s ease;
+}
+.me-surprise:active {
+  transform: scale(0.94);
 }
 .me-close {
   min-height: 40px;

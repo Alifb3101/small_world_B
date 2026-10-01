@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import Character from './Character';
+import { MUSIC } from '../data/content';
 import './MusicWorld.css';
 
 /* deterministic "random" so skylines don't reshuffle on every render */
@@ -118,8 +119,8 @@ function City() {
         aria-hidden="true"
       />
       <Skyline seed={21} height={170} windows className="ct-near" />
-      <span className="ct-neon ct-neon--1">open late</span>
-      <span className="ct-neon ct-neon--2">☾ café</span>
+      <span className="ct-neon ct-neon--1">{MUSIC.citySigns[0]}</span>
+      <span className="ct-neon ct-neon--2">{MUSIC.citySigns[1]}</span>
       <div className="ct-street">
         <span className="ct-refl ct-refl--1" />
         <span className="ct-refl ct-refl--2" />
@@ -196,7 +197,7 @@ function Room() {
         <span className="rm-pillow" />
         <span className="rm-blanket" />
       </div>
-      <Character name="together-lazy" className="rm-chars" idle="breathe" shadow={false} eager />
+      <Character name="together-lazy-2" className="rm-chars" idle="breathe" shadow={false} eager />
       <div className="rm-zzz" aria-hidden="true">
         <span>z</span>
         <span>z</span>

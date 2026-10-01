@@ -7,7 +7,7 @@ import { charSrc } from '../components/Character';
  * while nothing important is moving.
  */
 
-const WORLD_POSES = ['together-hug', 'jerry-dash', 'together-lazy'];
+const WORLD_POSES = ['together-hug', 'jerry-dash', 'together-lazy-2'];
 const VIDEOS = ['/clips/rain-city.mp4', '/clips/chase-room.mp4'];
 
 const kept = [];

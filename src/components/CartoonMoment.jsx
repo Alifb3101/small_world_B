@@ -6,6 +6,9 @@ import { fx } from '../lib/fx';
 import { sfx } from '../lib/audio';
 import { useScene } from './Scene';
 import { buzz, pick, REDUCED } from '../lib/motion';
+import { CARTOON } from '../data/content';
+
+const CAP = CARTOON.captions;
 
 /* Positions are percentages of the stage, applied as transforms. */
 const PEEKS = [
@@ -30,7 +33,7 @@ export default function CartoonMoment({ onTruce }) {
   const taps = useRef(0);
   const peek = useRef(PEEKS[0]);
   const [live, setLive] = useState(false);
-  const [caption, setCaption] = useState('wait for it…');
+  const [caption, setCaption] = useState(CAP.waiting);
   const [done, setDone] = useState(false);
 
   const at = (left, top) => {
@@ -54,14 +57,14 @@ export default function CartoonMoment({ onTruce }) {
     tl.to(t, { x: () => at(8, 0).x, duration: REDUCED ? 0.2 : 1.5, ease: 'power2.out' })
       .call(() => {
         sfx.squeak();
-        setCaption('there he goes.');
+        setCaption(CAP.jerryRuns);
       })
       .to(j, { x: () => at(-40, 0).x, duration: REDUCED ? 0.2 : 0.8, ease: 'power3.in' }, '+=0.15')
       .call(() => {
         setPose(t, 'tom-frustrated');
         setFlip(t, false);
         sfx.thud();
-        setCaption('every single time.');
+        setCaption(CAP.tomFails);
       })
       .to(t, { xPercent: 4, duration: 0.08, yoyo: true, repeat: 5, ease: 'none' })
       .call(() => {
@@ -74,7 +77,7 @@ export default function CartoonMoment({ onTruce }) {
       .to(j, { scale: 1, opacity: 1, duration: 0.55, ease: 'back.out(2.2)' })
       .call(() => {
         sfx.chime();
-        setCaption('tap jerry. if you can.');
+        setCaption(CAP.yourTurn);
         setLive(true);
       });
     return () => tl.kill();
@@ -108,7 +111,7 @@ export default function CartoonMoment({ onTruce }) {
 
     if (taps.current >= 3) {
       setLive(false);
-      setCaption('okay. truce.');
+      setCaption(CAP.truce);
       const tl = gsap.timeline({
         onComplete: () => {
           busy.current = false;
@@ -129,7 +132,7 @@ export default function CartoonMoment({ onTruce }) {
 
     const next = pick(PEEKS.filter((p) => p !== peek.current));
     peek.current = next;
-    setCaption(pick(['missed him.', 'too slow.', 'rude.', 'again?']));
+    setCaption(pick(CAP.missed));
     setPose(j, 'jerry-dash');
     const tl = gsap.timeline({
       onComplete: () => {
@@ -152,7 +155,7 @@ export default function CartoonMoment({ onTruce }) {
       .call(() => {
         setPose(t, 'tom-frustrated');
         sfx.bonk();
-        setCaption('tap him.');
+        setCaption(CAP.tryAgain);
       });
   };
 

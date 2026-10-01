@@ -3,6 +3,7 @@ import Scene from '../components/Scene';
 import MiniGame from '../components/MiniGame';
 import Character from '../components/Character';
 import { goTo } from '../lib/director';
+import { GAME } from '../data/content';
 import './KillOverthinking.css';
 
 export default function KillOverthinking() {
@@ -10,15 +11,15 @@ export default function KillOverthinking() {
     <Scene id="game" theme="game" camera="zoom" className="ko" label="Kill the overthinking">
       <div className="ko-wrap">
         <header className="ko-head">
-          <span className="eyebrow">sixty seconds</span>
+          <span className="eyebrow">{GAME.corner}</span>
           <h2 className="h-serif ko-title">
-            Kill the
+            {GAME.title}
             <br />
-            <em>overthinking.</em>
+            <em>{GAME.titleFancy}</em>
           </h2>
         </header>
         <Character name="tom-shocked" className="ko-tom" idle="tremble" alt="" shadow={false} />
-        <MiniGame onSong={() => goTo('music', 'tunnel')} />
+        <MiniGame onSong={() => goTo('music', 'tunnel')} onNext={() => goTo('daily', 'dream')} />
       </div>
     </Scene>
   );

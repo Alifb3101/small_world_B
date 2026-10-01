@@ -18,6 +18,8 @@
   place-items: center;
   min-height: 0;
   overflow: hidden;
+  container-type: size;
+  padding: clamp(8px, 2vh, 28px) clamp(4px, 1vw, 12px);
 }
 .arr-light {
   position: absolute;
@@ -63,13 +65,26 @@
 }
 .arr-art.char {
   position: relative;
-  width: min(86vw, 340px);
-  margin-top: 2vh;
+  /* together-lazy-2 is 900×591. Cap width and height so ears, paws, and Jerry stay inside every stage. */
+  width: min(82vw, 400px);
+  width: min(90cqw, calc(86cqh * 1.523), 640px);
+  margin: 0;
   --r: 0%;
-  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 56%, #000 calc(var(--r) * 0.7), transparent var(--r));
-  mask-image: radial-gradient(ellipse 72% 68% at 50% 56%, #000 calc(var(--r) * 0.7), transparent var(--r));
+  -webkit-mask-image: radial-gradient(
+    ellipse 150% 160% at 50% 50%,
+    #000 calc(var(--r) * 0.78),
+    transparent var(--r)
+  );
+  mask-image: radial-gradient(
+    ellipse 150% 160% at 50% 50%,
+    #000 calc(var(--r) * 0.78),
+    transparent var(--r)
+  );
 }
 .arr-art .char__img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.5)) brightness(0.88) saturate(0.85) sepia(0.08);
 }
 .arr-intro {
@@ -138,17 +153,11 @@
     grid-row: 2;
     align-self: center;
   }
-  .arr-art.char {
-    width: min(42vw, 560px);
-  }
   .arr-halo {
     width: 90vw;
   }
 }
 @media (max-height: 640px) {
-  .arr-art.char {
-    width: min(70vw, 280px);
-  }
   .arr-title {
     font-size: 48px;
   }

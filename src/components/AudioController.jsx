@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useStore, story } from '../lib/store';
 import { audioState, setEnabled, getLevel, unlock, stopSong } from '../lib/audio';
-import { SONGS } from '../data/content';
+import { PLAYLIST } from '../data/content';
 import { fx } from '../lib/fx';
 
 /**
@@ -17,7 +17,7 @@ export default function AudioController() {
 
   useEffect(() => {
     if (!song) return;
-    const s = SONGS.find((x) => x.id === song);
+    const s = PLAYLIST.find((x) => x.id === song);
     setToast(s?.title);
     const t = setTimeout(() => setToast(null), 3200);
     return () => clearTimeout(t);
@@ -53,7 +53,7 @@ export default function AudioController() {
     fx.burst(e.clientX, e.clientY, { count: 14, colors: ['moon', 'gold'], speed: [40, 140] });
   };
 
-  const current = SONGS.find((x) => x.id === song);
+  const current = PLAYLIST.find((x) => x.id === song);
 
   return (
     <div className={`audio ${entered ? 'is-in' : ''} ${overlay ? 'is-overlay' : ''}`} data-nofx>

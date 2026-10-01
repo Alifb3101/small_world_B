@@ -2,11 +2,13 @@ import React, { useMemo, useState } from 'react';
 import Scene from '../components/Scene';
 import Character from '../components/Character';
 import MagneticButton from '../components/MagneticButton';
-import { DAYS, DAY_ORDER } from '../data/content';
+import { TODAY } from '../data/content';
 import { goTo } from '../lib/director';
 import { sfx } from '../lib/audio';
 import './DailyWorld.css';
 
+const DAYS = TODAY.days;
+const DAY_ORDER = ['study', 'music', 'rainy', 'sleepy', 'chaotic', 'lazy'];
 const DAY_BY_WEEKDAY = [5, 0, 1, 2, 3, 4, 5]; // Sun lazy … Sat lazy
 const todayKey = () => DAY_ORDER[DAY_BY_WEEKDAY[new Date().getDay()]];
 
@@ -26,9 +28,9 @@ export default function DailyWorld() {
     <Scene id="daily" theme="daily" camera="rise" className="dw" label="A little world, today">
       <div className="dw-wrap">
         <header className="dw-head">
-          <span className="eyebrow">today in a very small world</span>
+          <span className="eyebrow">{TODAY.corner}</span>
           <h2 className="h-serif dw-title">
-            It’s a <em>{info.name}.</em>
+            {TODAY.title} <em>{info.name}.</em>
           </h2>
         </header>
 
@@ -48,7 +50,7 @@ export default function DailyWorld() {
           {day === 'study' && <div className="dw-books" aria-hidden="true" />}
           {day === 'study' && <span className="dw-pencil" aria-hidden="true" />}
 
-          {day === 'study' && <Character name="together-lazy" className="dw-main" idle="breathe" shadow={false} />}
+          {day === 'study' && <Character name="together-lazy-2" className="dw-main" idle="breathe" shadow={false} />}
           {day === 'study' && <Character name="jerry-sneaky" className="dw-side" idle="bob" shadow={false} />}
 
           {day === 'music' && <Character name="jerry-laugh" className="dw-main dw-dance" idle="sway" shadow={false} />}
@@ -56,7 +58,7 @@ export default function DailyWorld() {
 
           {day === 'rainy' && <Character name="together-lazy-2" className="dw-main" idle="breathe" shadow={false} />}
 
-          {day === 'sleepy' && <Character name="together-lazy" className="dw-main" idle="breathe" shadow={false} />}
+          {day === 'sleepy' && <Character name="together-lazy-2" className="dw-main" idle="breathe" shadow={false} />}
           {day === 'sleepy' && (
             <div className="dw-zzz" aria-hidden="true">
               <span>z</span>
@@ -99,7 +101,7 @@ export default function DailyWorld() {
             ‹
           </button>
           <MagneticButton variant="link" onClick={() => goTo('message', 'night')} sound="soft">
-            it’s getting late →
+            {TODAY.next}
           </MagneticButton>
           <button type="button" className="dw-arrow" onClick={() => cycle(1)} aria-label="Next day">
             ›

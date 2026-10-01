@@ -1,8 +1,9 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from '../lib/gsap';
-import { sfx } from '../lib/audio';
+import { sfx, stopSong } from '../lib/audio';
 import { REDUCED } from '../lib/motion';
 import { lockScroll } from '../lib/director';
+import { OPEN_WHEN } from '../data/content';
 
 /** A slightly battered envelope with a wax seal. */
 export function Envelope({ letter, index, onOpen }) {
@@ -26,6 +27,27 @@ export function Envelope({ letter, index, onOpen }) {
         {letter.seal}
       </span>
     </button>
+  );
+}
+
+const clipSrc = (file) => (file.startsWith('/') || /^https?:\/\//.test(file) ? file : `/clips/${file}`);
+
+/** A clip taped onto the letter. Hides itself if the file isn't there yet. */
+function LetterVideo({ file }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <video
+      className="owc-video"
+      // #t=0.1 makes iOS show the first frame instead of a blank box
+      src={`${clipSrc(file)}#t=0.1`}
+      controls
+      playsInline
+      preload="metadata"
+      onPlay={() => stopSong()}
+      onError={() => setFailed(true)}
+      data-nofx
+    />
   );
 }
 
@@ -72,6 +94,7 @@ export function OpenWhenCard({ letter, onClose }) {
         <div className="owc-pocket">
           <div className={`owc-paper owc-paper--${letter.tint}`}>
             <span className="owc-kicker">{letter.label}</span>
+            {letter.video && <LetterVideo file={letter.video} />}
             {letter.body.map((line, i) =>
               line ? (
                 <p key={i} className="owc-line">
@@ -86,7 +109,7 @@ export function OpenWhenCard({ letter, onClose }) {
         <div className="owc-flap" />
       </div>
       <button type="button" className="owc-close" onClick={onClose} data-nofx>
-        fold it back
+        {OPEN_WHEN.closeButton}
       </button>
     </div>
   );

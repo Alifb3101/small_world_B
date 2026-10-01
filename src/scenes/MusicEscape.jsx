@@ -5,7 +5,7 @@ import MusicWorld from '../components/MusicWorld';
 import AnimatedText from '../components/AnimatedText';
 import MagneticButton from '../components/MagneticButton';
 import ParallaxLayer from '../components/ParallaxLayer';
-import { SONGS } from '../data/content';
+import { SONGS, PLAYLIST, MUSIC } from '../data/content';
 import { gsap } from '../lib/gsap';
 import { useStore, story } from '../lib/store';
 import { audioState, playSong, stopSong, getLevel, sfx } from '../lib/audio';
@@ -14,8 +14,15 @@ import { sky } from '../lib/sky';
 import { REDUCED, buzz } from '../lib/motion';
 import './MusicEscape.css';
 
-const byId = (id) => SONGS.find((s) => s.id === id);
 const MIN = 0.02;
+const pickOne = (list) => list[Math.floor(Math.random() * list.length)];
+
+/** Songs from the surprise list may not have a world — lend them a random one. */
+function withWorld(t) {
+  if (t.world) return t;
+  const w = pickOne(SONGS);
+  return { ...t, world: w.id, synth: t.synth || w.synth };
+}
 
 /**
  * Circle geometry for the iris: a round window centred on the tapped portal,
@@ -30,6 +37,7 @@ function irisGeometry(x, y) {
 
 export default function MusicEscape() {
   const [world, setWorld] = useState(null);
+  const [track, setTrack] = useState(null);
   const [leaving, setLeaving] = useState(null);
   const [uiIn, setUiIn] = useState(false);
   const stage = useRef(null);
@@ -48,8 +56,10 @@ export default function MusicEscape() {
   const pendingClose = useRef(false);
   const worldRef = useRef(world);
   worldRef.current = world;
+  const trackRef = useRef(track);
+  trackRef.current = track;
   const { song, playing } = useStore(audioState);
-  const isPlaying = !!world && song === world && playing;
+  const isPlaying = !!track && song === track.id && playing;
 
   const applyIris = (s, zoom = 1) => {
     const g = geo.current;
@@ -212,31 +222,45 @@ export default function MusicEscape() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [!!world]);
 
-  const open = (id, e) => {
+  // the iris grows out of `rect` (the tapped portal window or button)
+  const open = (t, rect) => {
     if (busy.current || world) return;
-    const r = e.currentTarget.querySelector('.portal__win').getBoundingClientRect();
-    geo.current = irisGeometry(r.left + r.width / 2, r.top + r.height / 2);
+    geo.current = irisGeometry(rect.left + rect.width / 2, rect.top + rect.height / 2);
     busy.current = true;
     sfx.whoosh(1.3);
     buzz(10);
     setUiIn(false);
-    setWorld(id);
-    playSong(byId(id));
+    setWorld(t.world);
+    setTrack(t);
+    playSong(t);
   };
 
-  const shift = (dir) => {
+  // play another track from inside a world; the camera only pans if its world differs
+  const go = (t, dir = 1) => {
     const from = worldRef.current;
     if (busy.current || closing.current || !from) return;
+    buzz(6);
+    setTrack(t);
+    playSong(t);
+    if (t.world === from) return;
     busy.current = true;
     swapping.current = true;
     dirRef.current = dir;
-    const i = SONGS.findIndex((s) => s.id === from);
-    const next = SONGS[(i + dir + SONGS.length) % SONGS.length].id;
     sfx.whoosh(0.9);
-    buzz(6);
     setLeaving(from);
-    setWorld(next);
-    playSong(byId(next));
+    setWorld(t.world);
+  };
+
+  const shift = (dir) => {
+    const i = SONGS.findIndex((s) => s.id === worldRef.current);
+    go(SONGS[(i + dir + SONGS.length) % SONGS.length], dir);
+  };
+
+  const pickSurprise = () => withWorld(pickOne(PLAYLIST.filter((s) => s.id !== trackRef.current?.id)));
+
+  const surprise = () => {
+    sfx.sparkle();
+    go(pickSurprise(), 1);
   };
 
   // leaving works at any moment: mid-reveal it reverses from where the iris is,
@@ -272,13 +296,14 @@ export default function MusicEscape() {
         busy.current = false;
         setLeaving(null);
         setWorld(null);
+        setTrack(null);
       },
     });
   };
 
   const togglePlay = () => {
     if (isPlaying) stopSong();
-    else playSong(byId(worldRef.current));
+    else playSong(trackRef.current);
   };
 
   const onDown = (e) => {
@@ -293,17 +318,17 @@ export default function MusicEscape() {
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3 && performance.now() - s.t < 800) shift(dx < 0 ? 1 : -1);
   };
 
-  const current = byId(world);
+  const current = track;
 
   return (
     <Scene id="music" theme="music" camera="rise" className="music" label="Pick your little escape">
       <div className="me">
         <header className="me-head">
-          <span className="eyebrow">escape · four little worlds</span>
+          <span className="eyebrow">{MUSIC.corner}</span>
           <h2 className="h-serif me-title">
-            Pick your <em>little escape</em> <span className="me-hp">🎧</span>
+            {MUSIC.title} <em>{MUSIC.titleFancy}</em> <span className="me-hp">🎧</span>
           </h2>
-          <p className="hint">each one is a whole world. headphones help.</p>
+          <p className="hint">{MUSIC.hint}</p>
         </header>
 
         <ParallaxLayer depth={0.12} className="me-portals">
@@ -313,7 +338,7 @@ export default function MusicEscape() {
               type="button"
               className={`portal portal--${s.id} ${song === s.id ? 'is-playing' : ''}`}
               style={{ '--i': i }}
-              onClick={(e) => open(s.id, e)}
+              onClick={(e) => open(s, e.currentTarget.querySelector('.portal__win').getBoundingClientRect())}
               data-nofx
             >
               <span className="portal__win">
@@ -327,8 +352,15 @@ export default function MusicEscape() {
         </ParallaxLayer>
 
         <div className="me-foot">
+          <MagneticButton
+            variant="ghost"
+            sound="sparkle"
+            onClick={(e) => open(pickSurprise(), e.currentTarget.getBoundingClientRect())}
+          >
+            {MUSIC.surpriseButton}
+          </MagneticButton>
           <MagneticButton variant="link" onClick={() => goTo('tomjerry', 'cartoon')}>
-            okay, now something silly →
+            {MUSIC.next}
           </MagneticButton>
         </div>
       </div>
@@ -356,8 +388,8 @@ export default function MusicEscape() {
             </div>
 
             <div className={`me-ui ${uiIn ? 'is-in' : ''}`}>
-              <div className="me-now" key={world}>
-                <span className="eyebrow">{isPlaying ? 'now playing' : 'paused'}</span>
+              <div className="me-now" key={track.id}>
+                <span className="eyebrow">{isPlaying ? MUSIC.nowPlaying : MUSIC.paused}</span>
                 <AnimatedText as="h3" text={current.title} className="me-song h-serif" stagger={0.03} play={uiIn} />
                 <AnimatedText
                   as="p"
@@ -392,10 +424,13 @@ export default function MusicEscape() {
                     ›
                   </button>
                 </div>
-                <button type="button" className="me-close" onClick={close}>
-                  leave this world
+                <button type="button" className="me-surprise" onClick={surprise}>
+                  {MUSIC.surpriseButton}
                 </button>
-                <p className="me-swipe hint">swipe for another world</p>
+                <button type="button" className="me-close" onClick={close}>
+                  {MUSIC.leave}
+                </button>
+                <p className="me-swipe hint">{MUSIC.swipeHint}</p>
               </div>
             </div>
           </div>,
