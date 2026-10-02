@@ -5,7 +5,7 @@ import MusicWorld from '../components/MusicWorld';
 import AnimatedText from '../components/AnimatedText';
 import MagneticButton from '../components/MagneticButton';
 import ParallaxLayer from '../components/ParallaxLayer';
-import { SONGS, PLAYLIST, MUSIC } from '../data/content';
+import { SONGS, MOODS, PLAYLIST, MUSIC } from '../data/content';
 import { gsap } from '../lib/gsap';
 import { useStore, story } from '../lib/store';
 import { audioState, playSong, stopSong, getLevel, sfx } from '../lib/audio';
@@ -23,6 +23,9 @@ function withWorld(t) {
   const w = pickOne(SONGS);
   return { ...t, world: w.id, synth: t.synth || w.synth };
 }
+
+/** Prev / next stay inside the list the current track came from. */
+const queueOf = (t) => (t && MOODS.some((m) => m.id === t.id) ? MOODS : SONGS);
 
 /**
  * Circle geometry for the iris: a round window centred on the tapped portal,
@@ -58,8 +61,9 @@ export default function MusicEscape() {
   worldRef.current = world;
   const trackRef = useRef(track);
   trackRef.current = track;
-  const { song, playing } = useStore(audioState);
+  const { song, playing, loading } = useStore(audioState);
   const isPlaying = !!track && song === track.id && playing;
+  const isLoading = isPlaying && loading;
 
   const applyIris = (s, zoom = 1) => {
     const g = geo.current;
@@ -252,8 +256,9 @@ export default function MusicEscape() {
   };
 
   const shift = (dir) => {
-    const i = SONGS.findIndex((s) => s.id === worldRef.current);
-    go(SONGS[(i + dir + SONGS.length) % SONGS.length], dir);
+    const q = queueOf(trackRef.current);
+    const i = q.findIndex((s) => s.id === trackRef.current?.id);
+    go(q[(i + dir + q.length) % q.length], dir);
   };
 
   const pickSurprise = () => withWorld(pickOne(PLAYLIST.filter((s) => s.id !== trackRef.current?.id)));
@@ -351,6 +356,33 @@ export default function MusicEscape() {
           ))}
         </ParallaxLayer>
 
+        <section className="me-moods" aria-label={MUSIC.moodsTitle}>
+          <span className="eyebrow me-moods__title">{MUSIC.moodsTitle}</span>
+          <ol className="me-moods__list">
+            {MOODS.map((m, i) => (
+              <li key={m.id} style={{ '--i': i }}>
+                <button
+                  type="button"
+                  className={`mood ${song === m.id ? 'is-playing' : ''}`}
+                  onClick={(e) => open(m, e.currentTarget.querySelector('.mood__dot').getBoundingClientRect())}
+                  data-nofx
+                >
+                  <span className="mood__dot" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <span className="mood__text">
+                    <span className="mood__when">{m.when}</span>
+                    <span className="mood__title">{m.title}</span>
+                  </span>
+                  <span className="mood__play" aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         <div className="me-foot">
           <MagneticButton
             variant="ghost"
@@ -389,7 +421,9 @@ export default function MusicEscape() {
 
             <div className={`me-ui ${uiIn ? 'is-in' : ''}`}>
               <div className="me-now" key={track.id}>
-                <span className="eyebrow">{isPlaying ? MUSIC.nowPlaying : MUSIC.paused}</span>
+                <span className="eyebrow">
+                  {isLoading ? MUSIC.loading : isPlaying ? MUSIC.nowPlaying : MUSIC.paused}
+                </span>
                 <AnimatedText as="h3" text={current.title} className="me-song h-serif" stagger={0.03} play={uiIn} />
                 <AnimatedText
                   as="p"
@@ -403,24 +437,24 @@ export default function MusicEscape() {
               </div>
               <div className="me-bottom" data-nofx>
                 <div className="me-dots" aria-hidden="true">
-                  {SONGS.map((s) => (
-                    <i key={s.id} className={s.id === world ? 'is-on' : ''} />
+                  {queueOf(track).map((s) => (
+                    <i key={s.id} className={s.id === track.id ? 'is-on' : ''} />
                   ))}
                 </div>
                 <div className="me-controls">
-                  <button type="button" className="me-ctl" onClick={() => shift(-1)} aria-label="Previous world">
+                  <button type="button" className="me-ctl" onClick={() => shift(-1)} aria-label="Previous song">
                     ‹
                   </button>
                   <button
                     type="button"
-                    className={`me-ctl me-ctl--play ${isPlaying ? 'is-on' : ''}`}
+                    className={`me-ctl me-ctl--play ${isPlaying ? 'is-on' : ''} ${isLoading ? 'is-loading' : ''}`}
                     onClick={togglePlay}
                     aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
                     <span className="me-ctl__halo" ref={halo} />
                     <span className="me-play-icon" />
                   </button>
-                  <button type="button" className="me-ctl" onClick={() => shift(1)} aria-label="Next world">
+                  <button type="button" className="me-ctl" onClick={() => shift(1)} aria-label="Next song">
                     ›
                   </button>
                 </div>

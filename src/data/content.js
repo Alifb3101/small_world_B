@@ -92,6 +92,8 @@ export const OVERTHINKING = {
 /* ════════════════════════════════════════════════════════════
  *  3. MUSIC — pick your little escape
  * ════════════════════════════════════════════════════════════ */
+const CLOUD = 'https://pub-e1b8b115c4514a519c625b47dfe3ae13.r2.dev';
+
 export const MUSIC = {
   leadIn: 'Quieter in there now. Let’s make some noise. The good kind.', // scroll line before this scene
   corner: 'escape · four little worlds',
@@ -100,8 +102,9 @@ export const MUSIC = {
   hint: 'each one is a whole world. headphones help.',
   nowPlaying: 'now playing',
   paused: 'paused',
+  loading: 'tuning in…', // shown while a song is still arriving from the cloud
   leave: 'leave this world',
-  swipeHint: 'swipe for another world',
+  swipeHint: 'swipe for another song',
   citySigns: ['open late', '☾ café'], // neon signs in the rainy city world
   surpriseButton: '🎲 Surprise me', // plays a random song from the four worlds + the surprise list
   next: 'okay, now something silly →',
@@ -136,6 +139,78 @@ export const MUSIC = {
       mood: 'lamp on · world off',
       line: 'Lamp on. World off. Just this.',
       file: 'love-you-zindagi.mp3',
+    },
+  ],
+
+  // A song for every feeling — listed under the four worlds, and in "Surprise me" too.
+  // when:  the little label that says when to press play
+  // file:  a full URL (these live on Cloudflare R2) or an mp3 in public/audio/
+  // world: which drawn world it opens — 'train' | 'city' | 'sky' | 'room'
+  moodsTitle: 'a song for every feeling',
+  moods: [
+    {
+      id: 'us',
+      when: 'our friendship song',
+      title: 'Us',
+      line: 'Every inside joke. Every late reply. Every “same.” This one is ours.',
+      file: `${CLOUD}/friendship_song1.mp3`,
+      world: 'train',
+    },
+    {
+      id: 'rahat',
+      when: 'true rahat fateh ali world',
+      title: 'Rahat’s World',
+      line: 'One voice, and the whole sky goes quiet to listen.',
+      file: `${CLOUD}/friendship_song1.mp3`,
+      world: 'sky',
+    },
+    {
+      id: 'sad',
+      when: 'play when you’re sad',
+      title: 'A Little Hug',
+      line: 'Not here to fix it. Just here to sit with you until it passes.',
+      file: `${CLOUD}/ReelAudio-54455.mp3`,
+      world: 'room',
+    },
+    {
+      id: 'future',
+      when: 'if you’re tense about the future',
+      title: 'Parinda',
+      line: 'Even a caged bird keeps singing about the sky. Yours is coming.',
+      file: `${CLOUD}/parinda_ked%20pinjare%20maim.mp3`,
+      world: 'sky',
+    },
+    {
+      id: 'old',
+      when: 'old beauty',
+      title: 'Old Gold',
+      line: 'Some songs only get more beautiful with time. Some people too.',
+      file: `${CLOUD}/ReelAudio-75123.mp3`,
+      world: 'city',
+    },
+    {
+      id: 'english',
+      when: 'english beauty',
+      title: 'English Beauty',
+      line: 'Different language. Exact same feeling.',
+      file: `${CLOUD}/english.mp3`,
+      world: 'city',
+    },
+    {
+      id: 'sukoon',
+      when: 'when you overthink',
+      title: 'Sukoon',
+      line: 'Shh. The thoughts can wait outside. Breathe with this one.',
+      file: `${CLOUD}/sukoon_hote%20hai.mp3`,
+      world: 'room',
+    },
+    {
+      id: 'gang',
+      when: 'when you’re with your gang',
+      title: 'The Gang',
+      line: 'Loud. Chaotic. Perfect. Volume all the way up.',
+      file: `${CLOUD}/mixgang.mp3`,
+      world: 'train',
     },
   ],
 
@@ -469,9 +544,18 @@ const BACKUP_TUNES = {
 
 export const SONGS = MUSIC.songs.map((s) => ({ ...s, world: s.id, synth: BACKUP_TUNES[s.id] }));
 
+export const MOODS = MUSIC.moods.map((s) => ({
+  ...s,
+  id: `mood-${s.id}`,
+  mood: s.when,
+  world: BACKUP_TUNES[s.world] ? s.world : 'room',
+  synth: BACKUP_TUNES[s.world] || BACKUP_TUNES.room,
+}));
+
 /** Everything "Surprise me" can pick from. */
 export const PLAYLIST = [
   ...SONGS,
+  ...MOODS,
   ...MUSIC.surprise.map((s, i) => ({
     ...s,
     id: `surprise-${i}`,

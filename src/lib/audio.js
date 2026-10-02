@@ -22,6 +22,7 @@ export const audioState = createStore({
   unlocked: false,
   song: null,
   playing: false,
+  loading: false,
   source: null,
 });
 
@@ -101,6 +102,43 @@ export function unlock() {
 }
 
 /* ---------- which song files actually exist ---------- */
+
+/* Cross-origin songs (no CORS headers) can't go through Web Audio, so they are
+ * faded with element.volume — which iOS treats as read-only. */
+const canFade = (() => {
+  try {
+    const a = new Audio();
+    a.volume = 0.5;
+    return a.volume === 0.5;
+  } catch {
+    return false;
+  }
+})();
+const fades = new WeakMap();
+
+function fadeVolume(el, to, secs) {
+  cancelAnimationFrame(fades.get(el));
+  if (!canFade) return;
+  if (secs <= 0) {
+    el.volume = to;
+    return;
+  }
+  const from = el.volume;
+  const t0 = performance.now();
+  const step = () => {
+    const k = Math.min(1, (performance.now() - t0) / (secs * 1000));
+    el.volume = from + (to - from) * k;
+    if (k < 1) fades.set(el, requestAnimationFrame(step));
+  };
+  fades.set(el, requestAnimationFrame(step));
+}
+
+function release(el) {
+  cancelAnimationFrame(fades.get(el));
+  el.pause();
+  el.removeAttribute('src');
+  el.load();
+}
 
 const isExternal = (file) => /^(https?:)?\/\//.test(file);
 const srcOf = (file) => (isExternal(file) || file.startsWith('/') ? file : `/audio/${file}`);
@@ -397,12 +435,11 @@ export function playSong(song) {
   const fallback = () => {
     if (current !== entry || entry.synth) return;
     if (entry.el) {
-      entry.el.pause();
-      entry.el.removeAttribute('src');
+      release(entry.el);
       entry.el = null;
     }
     entry.synth = startSynth(song.synth, g);
-    audioState.set({ source: 'synth' });
+    audioState.set({ source: 'synth', loading: false });
   };
 
   if (song.file && available[song.file] !== false) {
@@ -414,6 +451,7 @@ export function playSong(song) {
     entry.el = el;
     if (isExternal(song.file)) {
       el.muted = !audioState.get().enabled;
+      fadeVolume(el, 0, 0);
     } else {
       try {
         ctx.createMediaElementSource(el).connect(g);
@@ -422,14 +460,18 @@ export function playSong(song) {
         el.muted = !audioState.get().enabled;
       }
     }
+    el.addEventListener('playing', () => {
+      if (current !== entry) return;
+      if (!entry.routed) fadeVolume(el, 1, 0.8);
+      audioState.set({ source: 'file', loading: false });
+    });
+    el.addEventListener('waiting', () => current === entry && audioState.set({ loading: true }));
     el.addEventListener('error', fallback, { once: true });
-    const p = el.play();
-    if (p)
-      p.then(() => current === entry && audioState.set({ source: 'file' })).catch(fallback);
+    el.play()?.catch((err) => err?.name !== 'AbortError' && fallback());
   } else fallback();
 
   ambBus.gain.setTargetAtTime(Math.min(ambTarget, AMB_DUCK), now(), 1);
-  audioState.set({ song: song.id, playing: true });
+  audioState.set({ song: song.id, playing: true, loading: !!entry.el });
 }
 
 export function stopSong(fade = 0.9, swapping = false) {
@@ -439,18 +481,11 @@ export function stopSong(fade = 0.9, swapping = false) {
   e.gain.gain.cancelScheduledValues(now());
   e.gain.gain.setTargetAtTime(0.0001, now(), fade / 3);
   if (e.el && !e.routed) {
-    const el = e.el;
-    const v0 = el.volume;
-    const t0 = performance.now();
-    const step = () => {
-      const k = Math.min(1, (performance.now() - t0) / (fade * 1000));
-      el.volume = Math.max(0, v0 * (1 - k));
-      if (k < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+    if (canFade) fadeVolume(e.el, 0, fade);
+    else e.el.pause();
   }
   setTimeout(() => {
-    e.el?.pause();
+    if (e.el) release(e.el);
     e.synth?.stop();
     try {
       e.gain.disconnect();
@@ -460,13 +495,20 @@ export function stopSong(fade = 0.9, swapping = false) {
   }, fade * 1000 + 200);
   if (!swapping) {
     ambBus.gain.setTargetAtTime(ambTarget, now(), 1.5);
-    audioState.set({ song: null, playing: false, source: null });
+    audioState.set({ song: null, playing: false, loading: false, source: null });
   }
 }
 
 /** 0..1 loudness of the current music — drives visual pulses. */
 export function getLevel() {
   if (!analyser || !current) return 0;
+  const el = current.el;
+  if (el && !current.routed) {
+    // cross-origin audio is invisible to the analyser, so let the visuals breathe with the song's clock
+    if (el.paused || el.readyState < 3) return 0;
+    const t = el.currentTime;
+    return 0.4 + 0.16 * Math.sin(t * 5.3) + 0.1 * Math.sin(t * 8.9 + 1.3);
+  }
   analyser.getByteFrequencyData(freq);
   let sum = 0;
   for (let i = 1; i < 28; i++) sum += freq[i];

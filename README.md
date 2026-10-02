@@ -24,7 +24,9 @@ Drop files into `public/audio/`:
 
 Until those exist, each world plays a small generative piece instead (the site checks which files exist when sound is first unlocked, so the fallback starts instantly). A song's `file` in `src/data/content.js` can also be an absolute path (`/music/x.mp3`) or a full URL.
 
-The "🎲 Surprise me" button picks from those four plus anything in `MUSIC.surprise` in `src/data/content.js` — add an entry there (and its mp3 in `public/audio/`) for each extra song.
+The "a song for every feeling" list (`MUSIC.moods` in `src/data/content.js`) streams from Cloudflare R2. Only one song ever plays at a time — starting another fades the last one out (on iPhone it stops instantly, since iOS can't fade cross-origin audio).
+
+The "🎲 Surprise me" button picks from those four, the feelings list, plus anything in `MUSIC.surprise` in `src/data/content.js` — add an entry there (and its mp3 in `public/audio/`) for each extra song.
 
 ## Heart reel
 
