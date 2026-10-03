@@ -50,6 +50,7 @@ export const OVERTHINKING = {
   counterOne: 'thought left', // "1 thought left"
   counterMany: 'thoughts left', // "3 thoughts left"
   hint: 'tap a thought. or fling it.',
+  skip: 'skip →', // small link in the top corner to move on without popping
 
   // The big bubbles she pops.
   // size: 'sm' | 'md' | 'lg'   ·   z: how close it floats (0.5 far → 1 near)
@@ -96,7 +97,7 @@ const CLOUD = 'https://pub-e1b8b115c4514a519c625b47dfe3ae13.r2.dev';
 
 export const MUSIC = {
   leadIn: 'Quieter in there now. Let’s make some noise. The good kind.', // scroll line before this scene
-  corner: 'escape · four little worlds',
+  corner: 'escape · a song for every feeling',
   title: 'Pick your',
   titleFancy: 'little escape',
   hint: 'each one is a whole world. headphones help.',
@@ -106,44 +107,16 @@ export const MUSIC = {
   leave: 'leave this world',
   swipeHint: 'swipe for another song',
   citySigns: ['open late', '☾ café'], // neon signs in the rainy city world
-  surpriseButton: '🎲 Surprise me', // plays a random song from the four worlds + the surprise list
+  surpriseButton: '🎲 Surprise me', // plays a random song from the row + the surprise list
   next: 'okay, now something silly →',
 
-  // The four worlds. Music files go in public/audio/ (see README).
-  // Keep the ids (train, city, sky, room) — each one has its own drawn world.
-  songs: [
-    {
-      id: 'train',
-      title: 'Ilahi',
-      mood: 'window seat · no destination',
-      line: 'Window seat. No destination. No deadline.',
-      file: 'ilahi.mp3',
-    },
-    {
-      id: 'city',
-      title: 'Iktara',
-      mood: 'rain · neon · slow',
-      line: 'The city can be loud. You don’t have to be.',
-      file: 'iktara.mp3',
-    },
-    {
-      id: 'sky',
-      title: 'Khaabon Ke Parinday',
-      mood: 'clouds · flying · free',
-      line: 'Somewhere above every deadline.',
-      file: 'khaabon-ke-parinday.mp3',
-    },
-    {
-      id: 'room',
-      title: 'Love You Zindagi',
-      mood: 'lamp on · world off',
-      line: 'Lamp on. World off. Just this.',
-      file: 'love-you-zindagi.mp3',
-    },
-  ],
+  // The picker is the moods below, drawn as the round worlds in one sideways row.
+  // songs stays empty so Ilahi, Iktara, Khaabon Ke Parinday and Love You Zindagi
+  // are not shown. world on each mood still picks the drawing: train | city | sky | room.
+  songs: [],
 
-  // A song for every feeling — listed under the four worlds, and in "Surprise me" too.
-  // when:  the little label that says when to press play
+  // A song for every feeling — the round worlds in the sideways row, and in "Surprise me" too.
+  // when:  the little label under the title
   // file:  a full URL (these live on Cloudflare R2) or an mp3 in public/audio/
   // world: which drawn world it opens — 'train' | 'city' | 'sky' | 'room'
   moodsTitle: 'a song for every feeling',
@@ -151,7 +124,7 @@ export const MUSIC = {
     {
       id: 'us',
       when: 'our friendship song',
-      title: 'Us',
+      title: 'Friendship over everything ',
       line: 'Every inside joke. Every late reply. Every “same.” This one is ours.',
       file: `${CLOUD}/friendship_song1.mp3`,
       world: 'train',
@@ -161,13 +134,13 @@ export const MUSIC = {
       when: 'true rahat fateh ali world',
       title: 'Rahat’s World',
       line: 'One voice, and the whole sky goes quiet to listen.',
-      file: `${CLOUD}/friendship_song1.mp3`,
+      file: `${CLOUD}/rahat_fatehi.mp3`,
       world: 'sky',
     },
     {
       id: 'sad',
       when: 'play when you’re sad',
-      title: 'A Little Hug',
+      title: 'Keep Fighting, Queen',
       line: 'Not here to fix it. Just here to sit with you until it passes.',
       file: `${CLOUD}/ReelAudio-54455.mp3`,
       world: 'room',
@@ -175,7 +148,7 @@ export const MUSIC = {
     {
       id: 'future',
       when: 'if you’re tense about the future',
-      title: 'Parinda',
+      title: 'You Were Born To Fly.',
       line: 'Even a caged bird keeps singing about the sky. Yours is coming.',
       file: `${CLOUD}/parinda_ked%20pinjare%20maim.mp3`,
       world: 'sky',
@@ -183,7 +156,7 @@ export const MUSIC = {
     {
       id: 'old',
       when: 'old beauty',
-      title: 'Old Gold',
+      title: 'Old beauty',
       line: 'Some songs only get more beautiful with time. Some people too.',
       file: `${CLOUD}/ReelAudio-75123.mp3`,
       world: 'city',
@@ -201,13 +174,13 @@ export const MUSIC = {
       when: 'when you overthink',
       title: 'Sukoon',
       line: 'Shh. The thoughts can wait outside. Breathe with this one.',
-      file: `${CLOUD}/sukoon_hote%20hai.mp3`,
+      file: `${CLOUD}/sukoongirl.mp3`,
       world: 'room',
     },
     {
       id: 'gang',
       when: 'when you’re with your gang',
-      title: 'The Gang',
+      title: 'Imagine you with your favorite people',
       line: 'Loud. Chaotic. Perfect. Volume all the way up.',
       file: `${CLOUD}/mixgang.mp3`,
       world: 'train',
@@ -264,16 +237,20 @@ export const OPEN_WHEN = {
   // seal: the symbol on the wax seal
   // tint: paper colour — 'lav' | 'gold' | 'moon' | 'peach'
   // body: each line of the letter ('' = empty line)
-  // video: (optional) a clip shown on the paper — the mp4 goes in public/clips/
+  // video: (optional) a clip taped on the paper.
+  //        a file in public/clips/  ·  or a full https address
+  // song:  (optional) plays only while this letter is open.
+  //        background music waits, then comes back when it’s folded.
   letters: [
     {
       id: 'overthinking',
       label: 'When you’re overthinking',
       seal: '☁',
       tint: 'lav',
+      song: `${CLOUD}/dost_forever.mp3`,
       body: [
         'Hey.',
-        'You don’t have to solve your entire life tonight.',
+        'You don’t have to solve your entire life today.',
         '',
         'Take a breath.',
         'Drink some water.',
@@ -288,6 +265,7 @@ export const OPEN_WHEN = {
       label: 'When studying feels impossible',
       seal: '✎',
       tint: 'gold',
+      video: `${CLOUD}/video/young_age.mp4`,
       body: [
         'Okay. Close the book for five minutes.',
         'Not forever. Just five.',
@@ -340,11 +318,10 @@ export const OPEN_WHEN = {
       tint: 'lav',
       video: 'heartreel.mp4',
       body: [
-        'Your brain writes whole essays.',
-        'Your heart just goes: dhak-dhak.',
-        '',
-        'So if it’s confusing you tonight,',
+        'In real life, your heart just goes: dhak-dhak.😅',
+        'So if it’s confusing you today,',
         'relax. It only knows one word.',
+        '',
       ],
     },
     {
@@ -365,18 +342,21 @@ export const OPEN_WHEN = {
     },
     {
       id: 'miss',
-      label: 'When you miss me',
+      label: 'When you miss someone',
       seal: '✉',
       tint: 'lav',
+      video: `${CLOUD}/video/misssomeone.mp4`,
       body: [
-        'Hey. I’m right here.',
-        'Maybe not in the room,',
-        'but in the silly jokes, in the songs,',
-        'in this whole ridiculous little website.',
+        'Hey. I know you miss them.',
+        'And honestly, that’s okay.',
+        'But don’t let missing someone',
+        'make you forget your own worth.',
         '',
-        'Text me. Even if it’s just a random sticker.',
-        'I’ll probably reply faster than you expect.',
-      ],
+        'Your energy deserves someone',
+        'who respects you, makes time for you,',
+        'and chooses you just as much.',
+        '',
+        ],
     },
     {
       id: 'someone',
@@ -395,6 +375,33 @@ export const OPEN_WHEN = {
       ],
     },
   ],
+
+  // ── THE FOLDED CARD ─────────────────────────────────────
+  // A real envelope under the pile. It stays shut until the password.
+  // password: the word she types. Capital letters don’t matter.
+  secret: {
+    password: 'honey',
+    whisper: 'this one stays folded',
+    title: 'Special note for Every Mood',
+    line: 'Write the Password, and it opens.',
+    placeholder: 'Password',
+    button: 'open',
+    wrong: 'not this one.',
+    label: 'Special',
+    seal: '🤌🏻',
+    tint: 'gold',
+    secret: true,
+    body: [
+      'Hey. You found it.',
+       'Hope you are doing well.',
+       'This is a special note for you.',
+       'I know you are going through a lot right now.',
+       'But you are strong and you will get through it.',
+       'Maybe something happend and i am not here',
+       'but dont lost hope and dont give up on yourself.',
+       'I know you can do it, you are a strong person and you will get through it.'
+    ],
+  },
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -459,7 +466,7 @@ export const MESSAGE = {
     { text: 'Okay…', hold: 900 },
     { text: 'One serious thing.', hold: 1500 },
     { text: 'You don’t have to be okay every second.', hold: 1700, big: true },
-    { text: 'And you definitely don’t have to figure everything out tonight.', hold: 2000, big: true },
+    { text: 'And you definitely don’t have to figure everything out Today.', hold: 2000, big: true },
     { text: 'But…', hold: 900 },
     { text: 'if your brain starts being annoying again…', hold: 1500 },
     { text: 'you know where to come.', hold: 800, big: true },
@@ -478,7 +485,7 @@ export const FINAL = {
   ],
   breathe: 'Breathe.',
   button: 'I’m okay now 🌙',
-  goodnight: 'Goodnight, overthinker. 🫶',
+  goodnight: 'Take Care Zainab ✌️',
 };
 
 /* ════════════════════════════════════════════════════════════

@@ -4,8 +4,7 @@ import Scene from '../components/Scene';
 import MusicWorld from '../components/MusicWorld';
 import AnimatedText from '../components/AnimatedText';
 import MagneticButton from '../components/MagneticButton';
-import ParallaxLayer from '../components/ParallaxLayer';
-import { SONGS, MOODS, PLAYLIST, MUSIC } from '../data/content';
+import { MOODS, PLAYLIST, MUSIC } from '../data/content';
 import { gsap } from '../lib/gsap';
 import { useStore, story } from '../lib/store';
 import { audioState, playSong, stopSong, getLevel, sfx } from '../lib/audio';
@@ -17,15 +16,16 @@ import './MusicEscape.css';
 const MIN = 0.02;
 const pickOne = (list) => list[Math.floor(Math.random() * list.length)];
 
+const WORLDS = ['train', 'city', 'sky', 'room'];
+
 /** Songs from the surprise list may not have a world — lend them a random one. */
 function withWorld(t) {
   if (t.world) return t;
-  const w = pickOne(SONGS);
-  return { ...t, world: w.id, synth: t.synth || w.synth };
+  return { ...t, world: pickOne(WORLDS) };
 }
 
-/** Prev / next stay inside the list the current track came from. */
-const queueOf = (t) => (t && MOODS.some((m) => m.id === t.id) ? MOODS : SONGS);
+/** Prev / next walk the same row of circles. */
+const queueOf = () => MOODS;
 
 /**
  * Circle geometry for the iris: a round window centred on the tapped portal,
@@ -43,6 +43,8 @@ export default function MusicEscape() {
   const [track, setTrack] = useState(null);
   const [leaving, setLeaving] = useState(null);
   const [uiIn, setUiIn] = useState(false);
+  const [scrollEnds, setScrollEnds] = useState({ start: true, end: false });
+  const scroller = useRef(null);
   const stage = useRef(null);
   const iris = useRef(null);
   const inner = useRef(null);
@@ -323,6 +325,107 @@ export default function MusicEscape() {
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3 && performance.now() - s.t < 800) shift(dx < 0 ? 1 : -1);
   };
 
+  const scrollStep = () => {
+    const el = scroller.current;
+    const card = el?.querySelector('.portal');
+    if (!el || !card) return 220;
+    const gap = parseFloat(getComputedStyle(el.querySelector('.me-portals')).columnGap) || 22;
+    return card.getBoundingClientRect().width + gap;
+  };
+
+  const nudgeRow = (dir, smooth) => {
+    const el = scroller.current;
+    if (!el) return;
+    const left = el.scrollLeft + dir * scrollStep();
+    if (smooth) el.scrollTo({ left, behavior: 'smooth' });
+    else el.scrollLeft = left;
+  };
+
+  // Hold an arrow and the row keeps stepping until you let go.
+  const holdArrow = (dir) => (e) => {
+    if (e.button != null && e.button !== 0) return;
+    e.preventDefault();
+    nudgeRow(dir, true);
+    let pulse = 0;
+    const wait = setTimeout(() => {
+      pulse = setInterval(() => nudgeRow(dir, false), 160);
+    }, 340);
+    const stop = () => {
+      clearTimeout(wait);
+      clearInterval(pulse);
+      window.removeEventListener('pointerup', stop);
+      window.removeEventListener('pointercancel', stop);
+    };
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+  };
+
+  // Wheel, trackpad, and a held drag all move the row by the same distance as the gesture.
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    let drag = null;
+
+    const syncEnds = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      setScrollEnds({ start: el.scrollLeft <= 2, end: max <= 2 || el.scrollLeft >= max - 2 });
+    };
+
+    const onWheel = (e) => {
+      if (el.scrollWidth <= el.clientWidth + 2) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      el.scrollLeft += e.deltaY;
+      e.preventDefault();
+    };
+
+    const onDown = (e) => {
+      if (e.button !== 0 || e.pointerType === 'touch') return;
+      if (e.target.closest('.me-arrow')) return;
+      drag = { x: e.clientX, left: el.scrollLeft, moved: false, pid: e.pointerId };
+    };
+    const onMove = (e) => {
+      if (!drag || e.pointerId !== drag.pid) return;
+      const dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) < 8) return;
+      if (!drag.moved) {
+        drag.moved = true;
+        el.classList.add('is-dragging');
+      }
+      el.scrollLeft = drag.left - dx;
+    };
+    const onUp = (e) => {
+      if (!drag || e.pointerId !== drag.pid) return;
+      const moved = drag.moved;
+      drag = null;
+      el.classList.remove('is-dragging');
+      if (!moved) return;
+      const killClick = (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        el.removeEventListener('click', killClick, true);
+      };
+      el.addEventListener('click', killClick, true);
+    };
+
+    syncEnds();
+    el.addEventListener('scroll', syncEnds, { passive: true });
+    window.addEventListener('resize', syncEnds);
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    return () => {
+      el.removeEventListener('scroll', syncEnds);
+      window.removeEventListener('resize', syncEnds);
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+  }, []);
+
   const current = track;
 
   return (
@@ -336,52 +439,45 @@ export default function MusicEscape() {
           <p className="hint">{MUSIC.hint}</p>
         </header>
 
-        <ParallaxLayer depth={0.12} className="me-portals">
-          {SONGS.map((s, i) => (
-            <button
-              key={s.id}
-              type="button"
-              className={`portal portal--${s.id} ${song === s.id ? 'is-playing' : ''}`}
-              style={{ '--i': i }}
-              onClick={(e) => open(s, e.currentTarget.querySelector('.portal__win').getBoundingClientRect())}
-              data-nofx
-            >
-              <span className="portal__win">
-                <span className="portal__scene" />
-                <span className="portal__glint" />
-              </span>
-              <span className="portal__title">{s.title}</span>
-              <span className="portal__mood">{s.mood}</span>
-            </button>
-          ))}
-        </ParallaxLayer>
-
-        <section className="me-moods" aria-label={MUSIC.moodsTitle}>
-          <span className="eyebrow me-moods__title">{MUSIC.moodsTitle}</span>
-          <ol className="me-moods__list">
-            {MOODS.map((m, i) => (
-              <li key={m.id} style={{ '--i': i }}>
+        <div className="me-row">
+          <button
+            type="button"
+            className="me-arrow me-arrow--prev"
+            aria-label="Scroll songs back"
+            disabled={scrollEnds.start}
+            onPointerDown={holdArrow(-1)}
+            data-nofx
+          />
+          <div className="me-scroll" ref={scroller}>
+            <div className="me-portals">
+              {MOODS.map((s, i) => (
                 <button
+                  key={s.id}
                   type="button"
-                  className={`mood ${song === m.id ? 'is-playing' : ''}`}
-                  onClick={(e) => open(m, e.currentTarget.querySelector('.mood__dot').getBoundingClientRect())}
+                  className={`portal portal--${s.world} ${song === s.id ? 'is-playing' : ''}`}
+                  style={{ '--i': i }}
+                  onClick={(e) => open(s, e.currentTarget.querySelector('.portal__win').getBoundingClientRect())}
                   data-nofx
                 >
-                  <span className="mood__dot" aria-hidden="true">
-                    <i />
-                    <i />
-                    <i />
+                  <span className="portal__win">
+                    <span className="portal__scene" />
+                    <span className="portal__glint" />
                   </span>
-                  <span className="mood__text">
-                    <span className="mood__when">{m.when}</span>
-                    <span className="mood__title">{m.title}</span>
-                  </span>
-                  <span className="mood__play" aria-hidden="true" />
+                  <span className="portal__title">{s.title}</span>
+                  <span className="portal__mood">{s.mood}</span>
                 </button>
-              </li>
-            ))}
-          </ol>
-        </section>
+              ))}
+            </div>
+          </div>
+          <button
+            type="button"
+            className="me-arrow me-arrow--next"
+            aria-label="Scroll songs forward"
+            disabled={scrollEnds.end}
+            onPointerDown={holdArrow(1)}
+            data-nofx
+          />
+        </div>
 
         <div className="me-foot">
           <MagneticButton

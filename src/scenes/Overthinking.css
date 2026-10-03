@@ -113,6 +113,15 @@
   }
 }
 
+.ot .ot-skip {
+  position: absolute;
+  top: calc(14px + var(--safe-t));
+  right: 12px;
+  z-index: 25;
+  font-size: 13px;
+  color: var(--cream-3);
+}
+
 .tcloud {
   position: relative;
   z-index: 10;

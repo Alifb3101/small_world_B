@@ -9,7 +9,7 @@ import { fx } from '../lib/fx';
  * Tap: sound on/off. Its rings breathe with whatever is playing.
  */
 export default function AudioController() {
-  const { enabled, song } = useStore(audioState);
+  const { enabled, song, cue } = useStore(audioState);
   const { entered, overlay } = useStore(story);
   const bars = useRef([]);
   const moon = useRef(null);
@@ -24,7 +24,7 @@ export default function AudioController() {
   }, [song]);
 
   useEffect(() => {
-    if (!song) {
+    if (!song && !cue) {
       if (moon.current) moon.current.style.transform = '';
       return;
     }
@@ -45,7 +45,7 @@ export default function AudioController() {
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [song, overlay]);
+  }, [song, cue, overlay]);
 
   const toggle = (e) => {
     unlock();
@@ -57,7 +57,7 @@ export default function AudioController() {
 
   return (
     <div className={`audio ${entered ? 'is-in' : ''} ${overlay ? 'is-overlay' : ''}`} data-nofx>
-      {current && (
+      {current && !cue && (
         <button type="button" className={`audio__now ${toast ? 'is-open' : ''}`} onClick={() => stopSong()} aria-label={`Stop ${current.title}`}>
           <span className="audio__bars" aria-hidden="true">
             {[0, 1, 2, 3].map((i) => (
@@ -69,7 +69,7 @@ export default function AudioController() {
       )}
       <button
         type="button"
-        className={`audio__orb ${enabled ? 'is-on' : 'is-off'} ${song ? 'is-playing' : ''}`}
+        className={`audio__orb ${enabled ? 'is-on' : 'is-off'} ${song || cue ? 'is-playing' : ''}`}
         onClick={toggle}
         aria-label={enabled ? 'Mute the little world' : 'Turn sound on'}
         aria-pressed={enabled}

@@ -4,7 +4,7 @@ import { PLAYLIST } from '../data/content';
 /**
  * Tiny Web Audio engine.
  * - sfx: synthesised interaction sounds (no files needed)
- * - ambience: a soft drone + occasional chimes
+ * - ambience: a very quiet looping track (bgmusic.mp3)
  * - music: plays /audio/<file> if present, otherwise a generative fallback
  * Nothing makes sound until unlock() is called from a user gesture.
  */
@@ -24,23 +24,28 @@ export const audioState = createStore({
   playing: false,
   loading: false,
   source: null,
+  cue: false, // a letter is playing its own song, so everything else waits
 });
 
-const AMB_LEVEL = 0.075;
-const AMB_DUCK = 0.02;
 const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66];
+/** Cross-origin file — no CORS, so loudness is the element volume, not a Web Audio gain. */
+const BG_URL = 'https://pub-e1b8b115c4514a519c625b47dfe3ae13.r2.dev/bgmusic.mp3';
+const BG_LEVEL = 0.04;
+const BG_DUCK = 0.01;
 
 let ctx = null;
 let master;
 let sfxBus;
-let ambBus;
 let musicBus;
 let analyser;
 let freq;
 let noiseBuf;
-let amb = null;
 let current = null;
-let ambTarget = AMB_LEVEL;
+let bgEl = null;
+let bgTarget = BG_LEVEL;
+let letterEl = null;
+let bgHeld = false;
+let holdGen = 0;
 
 function ensure() {
   if (ctx) return ctx;
@@ -62,9 +67,6 @@ function ensure() {
   sfxBus = ctx.createGain();
   sfxBus.gain.value = 0.6;
   sfxBus.connect(master);
-  ambBus = ctx.createGain();
-  ambBus.gain.value = 0;
-  ambBus.connect(master);
   musicBus = ctx.createGain();
   musicBus.gain.value = 0.9;
   analyser = ctx.createAnalyser();
@@ -83,9 +85,13 @@ function ensure() {
     if (document.hidden) {
       ctx.suspend();
       current?.el?.pause();
+      bgEl?.pause();
+      letterEl?.pause();
     } else {
       ctx.resume();
-      if (current?.el && audioState.get().playing) current.el.play().catch(() => {});
+      if (current?.el && audioState.get().playing && !current.suspended) current.el.play().catch(() => {});
+      if (bgEl && audioState.get().enabled && !bgHeld) bgEl.play().catch(() => {});
+      if (letterEl && audioState.get().enabled && letterEl.paused) letterEl.play().catch(() => {});
     }
   });
   return ctx;
@@ -262,48 +268,43 @@ export const sfx = {
   }),
 };
 
-export function startAmbience() {
-  ensure();
-  if (!ctx || amb) return;
-  const lp = ctx.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.value = 720;
-  lp.Q.value = 0.4;
-  const lfo = ctx.createOscillator();
-  lfo.frequency.value = 0.06;
-  const lfoG = ctx.createGain();
-  lfoG.gain.value = 280;
-  lfo.connect(lfoG).connect(lp.frequency);
-  lfo.start();
-  const notes = [110, 164.81, 220.5, 277.18, 329.63];
-  const levels = [0.5, 0.3, 0.2, 0.09, 0.05];
-  const oscs = notes.map((f, i) => {
-    const o = ctx.createOscillator();
-    o.type = i % 2 ? 'triangle' : 'sine';
-    o.frequency.value = f;
-    o.detune.value = (i - 2) * 5;
-    const g = ctx.createGain();
-    g.gain.value = levels[i];
-    o.connect(g).connect(lp);
-    o.start();
-    return o;
-  });
-  lp.connect(ambBus);
-  ambBus.gain.setTargetAtTime(ambTarget, now(), 2.5);
-  const timer = setInterval(() => {
-    if (!ready() || document.hidden || Math.random() > 0.55) return;
-    const f = PENTA[Math.floor(Math.random() * PENTA.length)] * (Math.random() < 0.5 ? 0.5 : 1);
-    const lvl = (ambBus.gain.value / AMB_LEVEL) * 0.022;
-    if (lvl > 0.002) tone('sine', f, now(), 3, lvl, { a: 0.02 });
-  }, 3800);
-  amb = { lp, oscs, lfo, timer };
+function desiredBg() {
+  if (!audioState.get().enabled || bgHeld) return 0;
+  return current && !current.suspended ? Math.min(bgTarget, BG_DUCK) : bgTarget;
 }
 
-export function setAmbience(level, cutoff) {
-  ambTarget = level;
-  if (!ctx) return;
-  ambBus.gain.setTargetAtTime(current ? Math.min(level, AMB_DUCK) : level, now(), 1.8);
-  if (amb && cutoff) amb.lp.frequency.setTargetAtTime(cutoff, now(), 2);
+function applyBg(secs = 1.2) {
+  if (!bgEl) return;
+  bgEl.muted = !audioState.get().enabled;
+  fadeVolume(bgEl, desiredBg(), secs);
+}
+
+export function startAmbience() {
+  ensure();
+  if (bgEl) {
+    if (audioState.get().enabled && bgEl.paused && !bgHeld) bgEl.play().catch(() => {});
+    applyBg(2);
+    return;
+  }
+  const el = new Audio();
+  el.loop = true;
+  el.preload = 'auto';
+  el.playsInline = true;
+  el.src = BG_URL;
+  fadeVolume(el, 0, 0);
+  el.muted = !audioState.get().enabled;
+  bgEl = el;
+  el.play()
+    ?.then(() => {
+      if (bgHeld) el.pause();
+      else applyBg(3);
+    })
+    .catch(() => {});
+}
+
+export function setAmbience(level) {
+  bgTarget = BG_LEVEL * Math.min(1, level / 0.075);
+  applyBg(1.8);
 }
 
 export function setEnabled(v) {
@@ -317,6 +318,17 @@ export function setEnabled(v) {
   if (v && ctx.state !== 'running') ctx.resume();
   master.gain.setTargetAtTime(v ? 1 : 0, now(), 0.12);
   if (current?.el) current.el.muted = !v && !current.routed;
+  if (letterEl) {
+    letterEl.muted = !v;
+    if (v) {
+      fadeVolume(letterEl, 1, 0.35);
+      if (letterEl.paused) letterEl.play().catch(() => {});
+    }
+  }
+  if (bgEl) {
+    if (v && bgEl.paused && !bgHeld) bgEl.play().catch(() => {});
+    applyBg(0.35);
+  }
 }
 
 /* ---------------- music ---------------- */
@@ -470,7 +482,7 @@ export function playSong(song) {
     el.play()?.catch((err) => err?.name !== 'AbortError' && fallback());
   } else fallback();
 
-  ambBus.gain.setTargetAtTime(Math.min(ambTarget, AMB_DUCK), now(), 1);
+  applyBg(1);
   audioState.set({ song: song.id, playing: true, loading: !!entry.el });
 }
 
@@ -494,13 +506,123 @@ export function stopSong(fade = 0.9, swapping = false) {
     }
   }, fade * 1000 + 200);
   if (!swapping) {
-    ambBus.gain.setTargetAtTime(ambTarget, now(), 1.5);
+    applyBg(1.5);
     audioState.set({ song: null, playing: false, loading: false, source: null });
+  }
+}
+
+/**
+ * A letter's own song. Background ambience and whatever else is playing
+ * pause for it, and both come back when the letter is folded shut.
+ * Call this from the click that opens the letter — play() needs that gesture.
+ */
+function park(el, gen) {
+  if (!el) return;
+  if (!canFade) {
+    el.pause();
+    return;
+  }
+  fadeVolume(el, 0, 0.32);
+  setTimeout(() => {
+    if (holdGen !== gen) return;
+    el.pause();
+  }, 360);
+}
+
+export function playLetterSong(url) {
+  if (!url) return;
+  unlock();
+  if (letterEl) {
+    release(letterEl);
+    letterEl = null;
+  }
+
+  const gen = ++holdGen;
+  if (!bgHeld) {
+    bgHeld = true;
+    park(bgEl, gen);
+    if (current && !current.suspended) {
+      current.suspended = true;
+      if (current.gain && ctx) {
+        current.gain.gain.cancelScheduledValues(now());
+        current.gain.gain.setTargetAtTime(0.0001, now(), 0.1);
+      }
+      if (current.el && !current.routed) fadeVolume(current.el, 0, 0.32);
+      if (current.el) {
+        const el = current.el;
+        setTimeout(() => {
+          if (holdGen !== gen || !current?.suspended) return;
+          el.pause();
+        }, canFade ? 360 : 0);
+      }
+    }
+  }
+
+  const el = new Audio();
+  el.loop = true;
+  el.preload = 'auto';
+  el.playsInline = true;
+  el.src = srcOf(url);
+  letterEl = el;
+  el.muted = !audioState.get().enabled;
+  fadeVolume(el, 0, 0);
+  el.addEventListener('playing', () => {
+    if (letterEl !== el || el.muted) return;
+    fadeVolume(el, 1, 0.55);
+  });
+  el.addEventListener('ended', () => {
+    if (letterEl !== el) return;
+    el.currentTime = 0;
+    el.play()?.catch(() => {});
+  });
+  audioState.set({ cue: true });
+  el.play()?.catch((err) => {
+    if (letterEl !== el || err?.name === 'AbortError') return;
+    stopLetterSong(0);
+  });
+}
+
+export function stopLetterSong(fade = 0.45) {
+  const el = letterEl;
+  if (!el && !bgHeld) return;
+  letterEl = null;
+  holdGen++;
+  bgHeld = false;
+
+  if (el) {
+    if (canFade && fade > 0) fadeVolume(el, 0, fade);
+    else el.pause();
+    setTimeout(() => release(el), fade * 1000 + 80);
+  }
+  audioState.set({ cue: false });
+
+  const resumeSong = current?.suspended ? current : null;
+  if (resumeSong) resumeSong.suspended = false;
+
+  if (bgEl) {
+    bgEl.muted = !audioState.get().enabled;
+    bgEl.play()?.catch(() => {});
+  }
+  applyBg(fade > 0 ? 1.1 : 0.2);
+
+  if (!resumeSong) return;
+  if (resumeSong.gain && ctx) {
+    resumeSong.gain.gain.cancelScheduledValues(now());
+    resumeSong.gain.gain.setTargetAtTime(1, now(), 0.22);
+  }
+  if (resumeSong.el && audioState.get().playing) {
+    if (!resumeSong.routed) fadeVolume(resumeSong.el, 1, resumeSong.el.muted ? 0 : 0.45);
+    resumeSong.el.play()?.catch(() => {});
   }
 }
 
 /** 0..1 loudness of the current music — drives visual pulses. */
 export function getLevel() {
+  const cue = letterEl;
+  if (cue && !cue.paused && !cue.muted && cue.readyState >= 2) {
+    const t = cue.currentTime;
+    return 0.4 + 0.16 * Math.sin(t * 5.3) + 0.1 * Math.sin(t * 8.9 + 1.3);
+  }
   if (!analyser || !current) return 0;
   const el = current.el;
   if (el && !current.routed) {

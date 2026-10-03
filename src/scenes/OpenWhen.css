@@ -1,9 +1,15 @@
 .ow-wrap {
   position: relative;
-  min-height: 100svh;
+  height: 100svh;
+  max-height: 100svh;
   padding: calc(32px + var(--safe-t)) 20px calc(28px + var(--safe-b));
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 .ow-title {
   font-size: clamp(36px, 10vw, 64px);
@@ -119,7 +125,85 @@
 .ow-foot {
   display: flex;
   justify-content: center;
-  padding-top: 8px;
+  padding-top: 18px;
+}
+
+/* The special card: a closed envelope, not a dot. */
+.fold {
+  position: relative;
+  display: block;
+  width: min(100%, 320px);
+  margin: 10px auto 0;
+  padding: 0 0 8px;
+  border-radius: 3px 3px 7px 7px;
+  background: #cbbba0;
+  text-align: center;
+  color: #2c2844;
+  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.42));
+}
+.fold:active {
+  transform: scale(0.985);
+}
+.fold__flap {
+  display: block;
+  height: 78px;
+  background: linear-gradient(180deg, #f3e7cf, #d9c49a);
+  clip-path: polygon(0 0, 50% 82%, 100% 0);
+  position: relative;
+  z-index: 3;
+}
+.fold__seal {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 48px;
+  translate: -50% 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+  color: #f6ecd9;
+  background: radial-gradient(circle at 40% 35%, #e0c070, #8a6a28);
+  box-shadow: 0 4px 0 #5a4818, 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+.fold__sheet {
+  display: block;
+  position: relative;
+  z-index: 2;
+  margin: -18px 8px 0;
+  padding: 30px 18px 16px;
+  background: linear-gradient(180deg, #fbf6ea, #ead9b6);
+  border-radius: 0 0 3px 3px;
+  box-shadow: inset 0 0 0 1px rgba(138, 106, 40, 0.16);
+}
+.fold__kicker {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a6a28;
+}
+.fold__title {
+  display: block;
+  margin: 4px 0 0;
+  font-family: var(--hand);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.05;
+  color: #2c2844;
+}
+.fold__hint {
+  display: block;
+  margin: 6px 0 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.35;
+  color: #6e675c;
 }
 
 /* opened letter */
@@ -127,11 +211,27 @@
   position: fixed;
   inset: 0;
   z-index: 75;
-  display: grid;
-  place-items: safe center;
-  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:
+    max(18px, env(safe-area-inset-top, 0px))
+    max(18px, env(safe-area-inset-right, 0px))
+    max(18px, env(safe-area-inset-bottom, 0px))
+    max(18px, env(safe-area-inset-left, 0px));
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+/* Center a short letter. A tall one scrolls, and the close button stays put. */
+.owc::before,
+.owc::after {
+  content: '';
+  flex: 1 0 0px;
+  width: 0;
+  min-height: 0;
 }
 .owc-scrim {
   position: fixed;
@@ -140,7 +240,9 @@
 }
 .owc-env {
   position: relative;
+  flex: 0 0 auto;
   width: min(92vw, 420px);
+  max-width: 100%;
   perspective: 900px;
   transform-style: preserve-3d;
   z-index: 1;
@@ -160,12 +262,14 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 28%;
+  /* Tied to the envelope width, so a long letter doesn't grow a giant lid. */
+  height: calc(min(92vw, 420px) * 0.42);
   background: linear-gradient(180deg, #efe4cc, #d4c094);
   clip-path: polygon(0 0, 50% 100%, 100% 0);
   transform-origin: 50% 0;
   z-index: 3;
   backface-visibility: hidden;
+  pointer-events: none;
 }
 .owc-paper {
   position: relative;
@@ -191,9 +295,13 @@
 }
 .owc-video {
   display: block;
+  /* Portrait reel. Width is the tightest limit so it stays on the paper on every screen. */
+  width: min(82%, 250px, calc(42svh * 9 / 16), calc(340px * 9 / 16));
+  height: auto;
+  aspect-ratio: 9 / 16;
   max-width: 100%;
-  max-height: 50svh;
-  margin: 0 auto 18px;
+  object-fit: contain;
+  margin: 2px auto 16px;
   border-radius: 6px;
   background: #1a1726;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
@@ -206,13 +314,200 @@
   line-height: 1.28;
   color: #2c2844;
 }
+.owc-x {
+  position: fixed;
+  z-index: 6;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #2c2844;
+  background: var(--cream);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+.owc-x svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  fill: none;
+}
+.owc-x:active {
+  transform: scale(0.94);
+}
 .owc-close {
   position: relative;
   z-index: 2;
+  flex: 0 0 auto;
   margin-top: 16px;
   font-size: 13px;
   color: var(--cream-2);
   border-bottom: 1px dashed rgba(246, 236, 217, 0.35);
+}
+
+@media (max-width: 700px) {
+  .owc-pocket,
+  .owc-paper {
+    min-height: 0;
+  }
+  .owc-paper {
+    padding-bottom: 28px;
+  }
+}
+
+/* sealed note — password, then the letter */
+.seal {
+  position: fixed;
+  inset: 0;
+  z-index: 76;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding:
+    max(72px, calc(env(safe-area-inset-top, 0px) + 64px))
+    max(20px, env(safe-area-inset-right, 0px))
+    max(24px, env(safe-area-inset-bottom, 0px))
+    max(20px, env(safe-area-inset-left, 0px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.fold--ask {
+  z-index: 1;
+  width: min(100%, 380px);
+  margin-top: min(4vh, 24px);
+  cursor: default;
+}
+.fold--ask:active {
+  transform: none;
+}
+.fold--ask .fold__flap {
+  height: 92px;
+}
+.fold--ask .fold__seal {
+  top: 58px;
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+.fold--ask .fold__sheet {
+  margin-top: -16px;
+  padding: 36px 22px 20px;
+}
+.fold--ask .fold__title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 7vw, 36px);
+  font-weight: 350;
+  letter-spacing: -0.02em;
+}
+.fold.is-shake {
+  animation: seal-shake 0.42s ease;
+}
+@keyframes seal-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-7px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fold.is-shake {
+    animation: none;
+  }
+}
+.fold__field {
+  display: block;
+  margin-top: 18px;
+}
+.fold__input {
+  width: 100%;
+  height: 46px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(44, 40, 68, 0.28);
+  border-radius: 0;
+  background: transparent;
+  color: #2c2844;
+  font-family: var(--serif);
+  font-size: 18px;
+  letter-spacing: 0.16em;
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fold__input::placeholder {
+  color: rgba(44, 40, 68, 0.38);
+  letter-spacing: 0.04em;
+  font-family: var(--sans);
+  font-size: 14px;
+}
+.fold__input:focus {
+  border-bottom-color: #8a6a28;
+}
+.fold__status {
+  min-height: 1.25em;
+  margin: 8px 0 0;
+  font-family: var(--hand);
+  font-size: 20px;
+  line-height: 1.15;
+  color: #8a4a3a;
+}
+.fold__go {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: #2c2844;
+  color: #f6ecd9;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.fold__go:disabled {
+  opacity: 0.38;
+}
+.fold__go:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.owc--secret .owc-paper {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 27px, rgba(138, 106, 40, 0.1) 27px 28px),
+    radial-gradient(120% 80% at 50% 0%, #fff8ea, #f3e2bc);
+}
+.owc-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  font-size: 14px;
+  color: #2c2416;
+  background: radial-gradient(circle at 40% 35%, #e8cb86, #8a6a28);
+  box-shadow: 0 3px 0 #5a4818;
+}
+.owc--secret .owc-kicker {
+  text-align: center;
+  color: #8a6a28;
 }
 
 @media (min-width: 900px) {
@@ -230,5 +525,8 @@
   }
   .owc-env {
     width: min(70vw, 520px);
+  }
+  .owc-flap {
+    height: calc(min(70vw, 520px) * 0.34);
   }
 }

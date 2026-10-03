@@ -70,6 +70,12 @@ export default function Overthinking() {
           </span>
         </header>
 
+        {!done && (
+          <MagneticButton variant="link" className="ot-skip" onClick={() => goTo('music', 'collapse')} sound="soft" burst={false}>
+            {OVERTHINKING.skip}
+          </MagneticButton>
+        )}
+
         <ThoughtCloud thoughts={THOUGHTS} onPop={onPop} nervous={THOUGHTS.length - left} />
 
         <p className="ot-hint hint">{OVERTHINKING.hint}</p>

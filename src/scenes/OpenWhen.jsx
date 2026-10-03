@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import Scene from '../components/Scene';
-import { Envelope, OpenWhenCard } from '../components/Envelope';
+import { Envelope, FoldedCard, OpenWhenCard, SecretGate } from '../components/Envelope';
 import MagneticButton from '../components/MagneticButton';
 import { OPEN_WHEN } from '../data/content';
 import { goTo } from '../lib/director';
-import { sfx } from '../lib/audio';
+import { sfx, playLetterSong, stopLetterSong } from '../lib/audio';
 import { fx } from '../lib/fx';
 import './OpenWhen.css';
 
 export default function OpenWhen() {
   const [open, setOpen] = useState(null);
+  const [sealed, setSealed] = useState(false);
+  const secret = OPEN_WHEN.secret;
 
   const pick = (letter, e) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -21,7 +23,13 @@ export default function OpenWhen() {
       gravity: 20,
     });
     sfx.paper();
+    if (letter.song) playLetterSong(letter.song);
     setOpen(letter);
+  };
+
+  const closeLetter = () => {
+    stopLetterSong();
+    setOpen(null);
   };
 
   return (
@@ -42,13 +50,27 @@ export default function OpenWhen() {
           ))}
         </div>
 
+        <FoldedCard secret={secret} onOpen={() => setSealed(true)} />
+
         <div className="ow-foot">
           <MagneticButton variant="link" onClick={() => goTo('game', 'dream')}>
             {OPEN_WHEN.next}
           </MagneticButton>
         </div>
       </div>
-      {open && createPortal(<OpenWhenCard letter={open} onClose={() => setOpen(null)} />, document.body)}
+      {sealed &&
+        createPortal(
+          <SecretGate
+            secret={secret}
+            onClose={() => setSealed(false)}
+            onUnlock={() => {
+              setSealed(false);
+              setOpen(secret);
+            }}
+          />,
+          document.body,
+        )}
+      {open && createPortal(<OpenWhenCard letter={open} onClose={closeLetter} />, document.body)}
     </Scene>
   );
 }

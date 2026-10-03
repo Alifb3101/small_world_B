@@ -68,7 +68,7 @@ export function OpenWhenCard({ letter, onClose }) {
       .fromTo(
         paper,
         { yPercent: 42, scaleY: 0.15, opacity: 0 },
-        { yPercent: -8, scaleY: 1, opacity: 1, duration: REDUCED ? 0.25 : 0.85, ease: 'power3.out' },
+        { yPercent: 0, y: -12, scaleY: 1, opacity: 1, duration: REDUCED ? 0.25 : 0.85, ease: 'power3.out' },
         0.7,
       )
       .call(() => sfx.soft());
@@ -88,11 +88,21 @@ export function OpenWhenCard({ letter, onClose }) {
   }, []);
 
   return (
-    <div className="owc" ref={ref} role="dialog" aria-label={letter.label}>
+    <div className={`owc${letter.secret ? ' owc--secret' : ''}`} ref={ref} role="dialog" aria-label={letter.label}>
       <button type="button" className="owc-scrim" onClick={onClose} aria-label="Close the letter" data-nofx />
+      <button type="button" className="owc-x" onClick={onClose} aria-label="Close the letter" data-nofx>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
       <div className="owc-env">
         <div className="owc-pocket">
           <div className={`owc-paper owc-paper--${letter.tint}`}>
+            {letter.secret && (
+              <span className="owc-mark" aria-hidden="true">
+                {letter.seal}
+              </span>
+            )}
             <span className="owc-kicker">{letter.label}</span>
             {letter.video && <LetterVideo file={letter.video} />}
             {letter.body.map((line, i) =>
@@ -111,6 +121,122 @@ export function OpenWhenCard({ letter, onClose }) {
       <button type="button" className="owc-close" onClick={onClose} data-nofx>
         {OPEN_WHEN.closeButton}
       </button>
+    </div>
+  );
+}
+
+/** The closed card under the pile. Same paper as the letters, one size of its own. */
+export function FoldedCard({ secret, onOpen }) {
+  return (
+    <button type="button" className="fold" onClick={onOpen} data-nofx aria-label={`${secret.label}. ${secret.whisper}`}>
+      <span className="fold__flap" />
+      <span className="fold__seal" aria-hidden="true">
+        {secret.seal}
+      </span>
+      <span className="fold__sheet">
+        <span className="fold__kicker">folded</span>
+        <span className="fold__title">{secret.label}</span>
+        <span className="fold__hint">{secret.whisper}</span>
+      </span>
+    </button>
+  );
+}
+
+/** The folded note. Nothing inside it is on the page until the word is right. */
+export function SecretGate({ secret, onClose, onUnlock }) {
+  const [value, setValue] = useState('');
+  const [wrong, setWrong] = useState(false);
+  const [shake, setShake] = useState(0);
+  const cardRef = useRef(null);
+  const inputRef = useRef(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+
+  useEffect(() => {
+    lockScroll(true, 'seal');
+    const focus = setTimeout(() => inputRef.current?.focus(), 60);
+    const onKey = (e) => e.key === 'Escape' && closeRef.current();
+    window.addEventListener('keydown', onKey);
+    return () => {
+      clearTimeout(focus);
+      window.removeEventListener('keydown', onKey);
+      lockScroll(false, 'seal');
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || !shake) return;
+    el.classList.remove('is-shake');
+    void el.offsetWidth;
+    el.classList.add('is-shake');
+  }, [shake]);
+
+  const submit = (e) => {
+    e.preventDefault();
+    const attempt = value.trim().toLowerCase();
+    const answer = String(secret.password || '').trim().toLowerCase();
+    if (attempt && attempt === answer) {
+      sfx.chime();
+      onUnlock();
+      return;
+    }
+    setWrong(true);
+    setShake((n) => n + 1);
+    sfx.thud();
+    inputRef.current?.focus();
+  };
+
+  return (
+    <div className="seal" role="dialog" aria-modal="true" aria-labelledby="seal-title">
+      <button type="button" className="owc-scrim" onClick={onClose} aria-label="Close" data-nofx />
+      <button type="button" className="owc-x" onClick={onClose} aria-label="Close" data-nofx>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <form className="fold fold--ask" ref={cardRef} onSubmit={submit}>
+        <span className="fold__flap" />
+        <span className="fold__seal" aria-hidden="true">
+          {secret.seal}
+        </span>
+        <span className="fold__sheet">
+          <span className="fold__kicker">folded</span>
+          <h2 id="seal-title" className="fold__title">
+            {secret.title}
+          </h2>
+          <p className="fold__hint">{secret.line}</p>
+          <label className="fold__field">
+            <span className="sr-only">Password</span>
+            <input
+              ref={inputRef}
+              className="fold__input"
+              type="password"
+              name="sealed-note"
+              value={value}
+              placeholder={secret.placeholder}
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="done"
+              aria-invalid={wrong || undefined}
+              aria-describedby="seal-status"
+              onChange={(e) => {
+                setValue(e.target.value);
+                if (wrong) setWrong(false);
+              }}
+              data-nofx
+            />
+          </label>
+          <p id="seal-status" className="fold__status" role="status">
+            {wrong ? secret.wrong : ''}
+          </p>
+          <button type="submit" className="fold__go" disabled={!value.trim()} data-nofx>
+            {secret.button}
+          </button>
+        </span>
+      </form>
     </div>
   );
 }
