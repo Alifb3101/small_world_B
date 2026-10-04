@@ -28,6 +28,8 @@ export function jumpTo(id) {
 export async function goTo(id, type = 'dream') {
   if (busy) return;
   busy = true;
+  // scenes never change the URL, so Clarity can't see them as page views on its own
+  window.clarity?.('event', `scene_${id}`);
   try {
     if (runner) await runner(REDUCED ? 'fade' : type, id, () => jumpTo(id));
     else jumpTo(id);
