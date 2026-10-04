@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from '../lib/gsap';
-import { sfx, stopSong } from '../lib/audio';
+import { sfx, stopSong, holdAmbience, releaseAmbience } from '../lib/audio';
 import { REDUCED } from '../lib/motion';
 import { lockScroll } from '../lib/director';
 import { OPEN_WHEN } from '../data/content';
@@ -35,6 +35,22 @@ const clipSrc = (file) => (file.startsWith('/') || /^https?:\/\//.test(file) ? f
 /** A clip taped onto the letter. Hides itself if the file isn't there yet. */
 function LetterVideo({ file }) {
   const [failed, setFailed] = useState(false);
+  const held = useRef(false);
+
+  const hold = () => {
+    if (held.current) return;
+    held.current = true;
+    holdAmbience();
+    stopSong();
+  };
+  const release = () => {
+    if (!held.current) return;
+    held.current = false;
+    releaseAmbience();
+  };
+
+  useEffect(() => release, []);
+
   if (failed) return null;
   return (
     <video
@@ -44,7 +60,9 @@ function LetterVideo({ file }) {
       controls
       playsInline
       preload="metadata"
-      onPlay={() => stopSong()}
+      onPlay={hold}
+      onPause={release}
+      onEnded={release}
       onError={() => setFailed(true)}
       data-nofx
     />

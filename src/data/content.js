@@ -426,7 +426,7 @@ export const OPEN_WHEN = {
   // A real envelope under the pile. It stays shut until the password.
   // password: the word she types. Capital letters don’t matter.
   secret: {
-    password: 'honey',
+    password: '2084',
     whisper: 'this one stays folded',
     title: 'Special note for Every Mood',
     line: 'Write the Password, and it opens.',
@@ -451,14 +451,14 @@ export const OPEN_WHEN = {
 };
 
 /* ════════════════════════════════════════════════════════════
- *  6. THE GAME — kill the overthinking (60 seconds)
+ *  6. THE GAME — kill the overthinking (30 seconds)
  * ════════════════════════════════════════════════════════════ */
 export const GAME = {
   leadIn: 'Okay. This next one is a little loud.',
-  corner: 'sixty seconds',
+  corner: 'thirty seconds',
   title: 'Kill the',
   titleFancy: 'overthinking.',
-  startButton: 'Start the 60 second chaos',
+  startButton: 'Start the 30 second chaos',
   hint: 'tap the nonsense before it multiplies.',
   skip: 'not now, skip →', // link under the start button to move on without playing
   scoreBrain: 'OVERTHINKING', // score label for the thoughts that got away
@@ -472,12 +472,12 @@ export const GAME = {
 
   // When the time runs out:
   end: [
-    { text: 'You successfully bullied your brain for 60 seconds.', hold: 1600, big: true },
+    { text: 'You successfully bullied your brain for 30 seconds.', hold: 1600, big: true },
     { text: 'Honestly?', hold: 900 },
     { text: 'Your brain needs a timeout.', hold: 800 },
   ],
-  button: '🎧 One song?',
-  next: 'or… keep going →',
+  button: 'or… 🎧 One song?',
+  next: 'keep going →',
 };
 
 /* ════════════════════════════════════════════════════════════

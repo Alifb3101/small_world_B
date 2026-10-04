@@ -31,7 +31,6 @@ const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66];
 /** Cross-origin file — no CORS, so loudness is the element volume, not a Web Audio gain. */
 const BG_URL = 'https://pub-e1b8b115c4514a519c625b47dfe3ae13.r2.dev/bgmusic.mp3';
 const BG_LEVEL = 0.04;
-const BG_DUCK = 0.01;
 
 let ctx = null;
 let master;
@@ -46,6 +45,8 @@ let bgTarget = BG_LEVEL;
 let letterEl = null;
 let bgHeld = false;
 let holdGen = 0;
+let bgGen = 0;
+let mediaHold = 0;
 
 function ensure() {
   if (ctx) return ctx;
@@ -90,7 +91,7 @@ function ensure() {
     } else {
       ctx.resume();
       if (current?.el && audioState.get().playing && !current.suspended) current.el.play().catch(() => {});
-      if (bgEl && audioState.get().enabled && !bgHeld) bgEl.play().catch(() => {});
+      applyBg(0.4);
       if (letterEl && audioState.get().enabled && letterEl.paused) letterEl.play().catch(() => {});
     }
   });
@@ -268,21 +269,60 @@ export const sfx = {
   }),
 };
 
-function desiredBg() {
-  if (!audioState.get().enabled || bgHeld) return 0;
-  return current && !current.suspended ? Math.min(bgTarget, BG_DUCK) : bgTarget;
+/** Background ambience plays only when nothing else is. */
+function bgShouldRun() {
+  if (!audioState.get().enabled || bgHeld || mediaHold > 0) return false;
+  if (current && !current.suspended) return false;
+  return true;
 }
 
 function applyBg(secs = 1.2) {
   if (!bgEl) return;
+  const gen = ++bgGen;
   bgEl.muted = !audioState.get().enabled;
-  fadeVolume(bgEl, desiredBg(), secs);
+  if (!bgShouldRun()) {
+    if (bgEl.paused) return;
+    if (!canFade || secs <= 0) {
+      bgEl.pause();
+      return;
+    }
+    const out = Math.min(secs, 0.4);
+    fadeVolume(bgEl, 0, out);
+    setTimeout(() => {
+      if (bgGen !== gen || bgShouldRun() || !bgEl) return;
+      bgEl.pause();
+    }, out * 1000 + 40);
+    return;
+  }
+  const rise = () => {
+    if (!bgEl || bgGen !== gen || !bgShouldRun()) {
+      if (bgEl && !bgShouldRun()) bgEl.pause();
+      return;
+    }
+    fadeVolume(bgEl, bgTarget, secs);
+  };
+  if (!bgEl.paused) {
+    rise();
+    return;
+  }
+  if (canFade) bgEl.volume = 0;
+  bgEl.play()?.then(rise).catch(() => {});
+}
+
+/** Pause background music while some other clip (a letter video) is playing. */
+export function holdAmbience() {
+  mediaHold += 1;
+  applyBg(0.3);
+}
+
+export function releaseAmbience() {
+  mediaHold = Math.max(0, mediaHold - 1);
+  applyBg(1);
 }
 
 export function startAmbience() {
   ensure();
   if (bgEl) {
-    if (audioState.get().enabled && bgEl.paused && !bgHeld) bgEl.play().catch(() => {});
     applyBg(2);
     return;
   }
@@ -295,10 +335,7 @@ export function startAmbience() {
   el.muted = !audioState.get().enabled;
   bgEl = el;
   el.play()
-    ?.then(() => {
-      if (bgHeld) el.pause();
-      else applyBg(3);
-    })
+    ?.then(() => applyBg(3))
     .catch(() => {});
 }
 
@@ -325,10 +362,7 @@ export function setEnabled(v) {
       if (letterEl.paused) letterEl.play().catch(() => {});
     }
   }
-  if (bgEl) {
-    if (v && bgEl.paused && !bgHeld) bgEl.play().catch(() => {});
-    applyBg(0.35);
-  }
+  if (bgEl) applyBg(0.35);
 }
 
 /* ---------------- music ---------------- */
@@ -516,19 +550,6 @@ export function stopSong(fade = 0.9, swapping = false) {
  * pause for it, and both come back when the letter is folded shut.
  * Call this from the click that opens the letter — play() needs that gesture.
  */
-function park(el, gen) {
-  if (!el) return;
-  if (!canFade) {
-    el.pause();
-    return;
-  }
-  fadeVolume(el, 0, 0.32);
-  setTimeout(() => {
-    if (holdGen !== gen) return;
-    el.pause();
-  }, 360);
-}
-
 export function playLetterSong(url) {
   if (!url) return;
   unlock();
@@ -540,7 +561,7 @@ export function playLetterSong(url) {
   const gen = ++holdGen;
   if (!bgHeld) {
     bgHeld = true;
-    park(bgEl, gen);
+    applyBg(0.32);
     if (current && !current.suspended) {
       current.suspended = true;
       if (current.gain && ctx) {
@@ -599,10 +620,6 @@ export function stopLetterSong(fade = 0.45) {
   const resumeSong = current?.suspended ? current : null;
   if (resumeSong) resumeSong.suspended = false;
 
-  if (bgEl) {
-    bgEl.muted = !audioState.get().enabled;
-    bgEl.play()?.catch(() => {});
-  }
   applyBg(fade > 0 ? 1.1 : 0.2);
 
   if (!resumeSong) return;

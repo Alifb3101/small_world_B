@@ -492,21 +492,56 @@
 
 @media (min-width: 900px) {
   .me {
-    --me-pad: 8vw;
-    padding: 70px var(--me-pad) 60px;
+    --me-pad: 6vw;
+    --portal: clamp(130px, min(15vw, 28vh), 220px);
+    padding: clamp(24px, 6vh, 70px) var(--me-pad) clamp(20px, 5vh, 56px);
+  }
+  .me-title {
+    font-size: clamp(32px, min(4vw, 7vh), 60px);
+    max-width: 24ch;
+    margin: 10px 0 8px;
+  }
+  .me-row {
+    margin-top: 0;
+  }
+  .me-track {
+    padding: 0 60px;
+  }
+  .me-scroll {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent);
   }
   .me-arrow {
-    top: calc(20px + min(18vw, 220px) / 2 + 11px);
+    top: calc(16px + var(--portal) / 2 + 9px);
+  }
+  .me-arrow--prev {
+    left: 0;
+  }
+  .me-arrow--next {
+    right: 0;
+  }
+  .me-arrow:not(:disabled):hover {
+    background: rgba(30, 26, 60, 0.85);
   }
   .me-portals {
-    gap: 36px;
-    padding: 20px 48px 40px;
+    gap: clamp(24px, 2.6vw, 40px);
+    padding: 16px 32px 34px;
   }
   .portal {
-    width: min(18vw, 220px);
+    width: var(--portal);
   }
   .portal:nth-child(even) {
-    translate: 0 22px;
+    translate: 0 18px;
+  }
+  .portal__title {
+    margin-top: 8px;
+    font-size: clamp(15px, 1.25vw, 18px);
+  }
+  .me-foot {
+    margin-top: 12px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 28px;
   }
   .me-ui {
     padding: 60px 8vw 44px;

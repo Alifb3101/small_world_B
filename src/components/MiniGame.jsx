@@ -10,11 +10,12 @@ import MagneticButton from './MagneticButton';
 import TextSequence from './TextSequence';
 
 const { words: GAME_WORDS, quips: GAME_QUIPS, end: END } = GAME;
+const DURATION = 30;
 
 let uid = 1;
 
 /**
- * Sixty seconds of tapping attacking thoughts.
+ * Thirty seconds of tapping attacking thoughts.
  * Not a productivity tool. A tiny tantrum, on purpose.
  */
 export default function MiniGame({ onSong, onNext }) {
@@ -25,7 +26,7 @@ export default function MiniGame({ onSong, onNext }) {
   const [playing, setPlaying] = useState(false);
   const [zainab, setZainab] = useState(0);
   const [brain, setBrain] = useState(0);
-  const [left, setLeft] = useState(60);
+  const [left, setLeft] = useState(DURATION);
   const [ended, setEnded] = useState(false);
   const [cta, setCta] = useState(false);
   const [quip, setQuip] = useState('');
@@ -49,7 +50,7 @@ export default function MiniGame({ onSong, onNext }) {
     if (!playing) return;
     const t0 = performance.now();
     const iv = setInterval(() => {
-      const s = Math.max(0, 60 - Math.floor((performance.now() - t0) / 1000));
+      const s = Math.max(0, DURATION - Math.floor((performance.now() - t0) / 1000));
       setLeft(s);
       if (s <= 0) finish();
     }, 250);
@@ -158,7 +159,7 @@ export default function MiniGame({ onSong, onNext }) {
     scores.current = { z: 0, b: 0 };
     setZainab(0);
     setBrain(0);
-    setLeft(60);
+    setLeft(DURATION);
     setEnded(false);
     setCta(false);
     items.current.forEach((b) => b.el?.remove());
@@ -219,14 +220,14 @@ export default function MiniGame({ onSong, onNext }) {
         <div className="mg-end">
           <TextSequence lines={END} play onDone={() => setCta(true)} className="mg-lines" dimPast />
           <div className={`mg-cta ${cta ? 'is-in' : ''}`}>
-            <MagneticButton onClick={onSong} sound="sparkle">
-              {GAME.button}
-            </MagneticButton>
             {onNext && (
-              <MagneticButton variant="link" onClick={onNext} sound="soft">
+              <MagneticButton onClick={onNext} sound="soft">
                 {GAME.next}
               </MagneticButton>
             )}
+            <MagneticButton variant="link" onClick={onSong} sound="sparkle">
+              {GAME.button}
+            </MagneticButton>
           </div>
         </div>
       )}
