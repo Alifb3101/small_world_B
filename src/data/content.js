@@ -56,23 +56,25 @@ export const OVERTHINKING = {
   // size: 'sm' | 'md' | 'lg'   ·   z: how close it floats (0.5 far → 1 near)
   thoughts: [
     { text: 'What if I can’t do it?', size: 'lg', z: 0.95 },
-    { text: 'I still have so much to study…', size: 'md', z: 0.7 },
-    { text: 'I should’ve started earlier.', size: 'md', z: 0.85 },
-    { text: 'What if everything goes wrong?', size: 'sm', z: 0.55 },
+    { text: 'Why does everything feel so overwhelming?', size: 'sm', z: 0.6 },
+    { text: 'I still have so much to do…', size: 'md', z: 0.85 },
+    { text: 'Why Always Me?', size: 'sm', z: 0.55 },
+    { text: 'Why does everything feel so heavy?', size: 'md', z: 0.8 },
+    { text: 'Why can’t I stop thinking about it?', size: 'sm', z: 0.6 },
   ],
 
   // Faint words drifting in the background.
   echoes: [
     'Am I doing enough?',
-    'deadline',
+    'Assignments deadline',
     'chapter 7??',
     'reply later',
-    'tomorrow',
+    'Journal submission',
     'too late?',
     'focus.',
     'what if',
     'again',
-    'notes',
+    'Practicals',
     'everyone else is ahead',
     'sleep?',
   ],
@@ -98,9 +100,9 @@ const CLOUD = 'https://pub-e1b8b115c4514a519c625b47dfe3ae13.r2.dev';
 export const MUSIC = {
   leadIn: 'Quieter in there now. Let’s make some noise. The good kind.', // scroll line before this scene
   corner: 'escape · a song for every feeling',
-  title: 'Pick your',
-  titleFancy: 'little escape',
-  hint: 'each one is a whole world. headphones help.',
+  title: 'I know you have a beautiful playlist.',
+  titleFancy: 'These are just a little different.',
+  hint: 'Consider these a tiny addition.',
   nowPlaying: 'now playing',
   paused: 'paused',
   loading: 'tuning in…', // shown while a song is still arriving from the cloud
@@ -108,7 +110,7 @@ export const MUSIC = {
   swipeHint: 'swipe for another song',
   citySigns: ['open late', '☾ café'], // neon signs in the rainy city world
   surpriseButton: '🎲 Surprise me', // plays a random song from the row + the surprise list
-  next: 'okay, now something silly →',
+  next: 'okay, now a little theory →',
 
   // The picker is the moods below, drawn as the round worlds in one sideways row.
   // songs stays empty so Ilahi, Iktara, Khaabon Ke Parinday and Love You Zindagi
@@ -202,7 +204,50 @@ export const MUSIC = {
 };
 
 /* ════════════════════════════════════════════════════════════
- *  4. TOM & JERRY — a tiny cartoon
+ *  4. OCTOBER — the great october theory
+ * ════════════════════════════════════════════════════════════ */
+// pages: each [ … ] is one little screen. Its lines type in one by one,
+// then the screen fades and the next one starts. The last one stays.
+export const OCTOBER = {
+  corner: 'a little theory',
+  title: 'You Know Great October Theory 🍂',
+  pages: [
+    [{ text: 'They say October is the second New Year of the year.', hold: 2400, big: true }],
+    [
+      { text: 'January is when we make plans, set goals, and imagine how the year is going to unfold.', hold: 1400 },
+      { text: 'But by the time October arrives, something changes.', hold: 1400 },
+      { text: 'We start looking back at everything that happened —', hold: 700 },
+      {
+        text: 'the people we met, the people we lost, the things that changed us, the dreams that came true, and the ones that didn’t.',
+        hold: 3000,
+      },
+    ],
+    [{ text: 'October feels like a quiet reset.', hold: 2400, big: true }],
+    [
+      { text: 'Some people enter your life.', hold: 700 },
+      { text: 'Some people leave it.', hold: 700 },
+      { text: 'Some connections become stronger.', hold: 700 },
+      { text: 'Some suddenly make sense.', hold: 2200 },
+    ],
+    [
+      { text: 'And sometimes, you realize that you’ve become a completely different person from who you were in January.', hold: 1600 },
+      { text: 'Maybe that’s why October feels so different.', hold: 2400, big: true },
+    ],
+    [
+      { text: 'It’s not just another month.', hold: 1000 },
+      { text: 'It’s a reminder that there are still three months left to change the story of your year.', hold: 2800, big: true },
+    ],
+    [
+      { text: 'A second beginning.', hold: 800 },
+      { text: 'A second chance.', hold: 1000 },
+      { text: 'A quiet reminder that it’s never too late to start again. 🍂✨', hold: 600, big: true },
+    ],
+  ],
+  next: 'okay. something quieter →',
+};
+
+/* ════════════════════════════════════════════════════════════
+ *  TOM & JERRY — the old cartoon slide (not shown right now)
  * ════════════════════════════════════════════════════════════ */
 export const CARTOON = {
   leadIn: 'Meanwhile, somewhere in a very old cartoon…',
@@ -300,6 +345,7 @@ export const OPEN_WHEN = {
       label: 'When you need a smile',
       seal: '☺',
       tint: 'peach',
+      video: `${CLOUD}/video/comedy.mp4`,
       body: [
         'Fun fact: Tom has been chasing Jerry since 1940',
         'and he still hasn’t caught him. Not once.',
@@ -471,7 +517,7 @@ export const MESSAGE = {
     { text: 'if your brain starts being annoying again…', hold: 1500 },
     { text: 'you know where to come.', hold: 800, big: true },
   ],
-  next: 'okay →',
+  next: 'okay → ???',
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -479,7 +525,7 @@ export const MESSAGE = {
  * ════════════════════════════════════════════════════════════ */
 export const FINAL = {
   lines: [
-    { text: 'You don’t have to solve everything tonight.', hold: 1900 },
+    { text: 'You don’t have to solve everything Today.', hold: 1900 },
     { text: 'Tomorrow can handle tomorrow.', hold: 1900 },
     { text: 'For now…', hold: 1500 },
   ],

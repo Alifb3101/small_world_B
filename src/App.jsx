@@ -9,7 +9,7 @@ import Interlude from './components/Interlude';
 import Arrival from './scenes/Arrival';
 import Overthinking from './scenes/Overthinking';
 import MusicEscape from './scenes/MusicEscape';
-import TomJerryMoment from './scenes/TomJerryMoment';
+import OctoberTheory from './scenes/OctoberTheory';
 import OpenWhen from './scenes/OpenWhen';
 import KillOverthinking from './scenes/KillOverthinking';
 import DailyWorld from './scenes/DailyWorld';
@@ -72,7 +72,7 @@ export default function App() {
         <Interlude id="i-notes" theme="notes" variant="notes" text={MUSIC.leadIn} />
         <MusicEscape />
         <Interlude id="i-reel" theme="reel" variant="reel" text={CARTOON.leadIn} />
-        <TomJerryMoment />
+        <OctoberTheory />
         <Interlude id="i-paper" theme="paper" variant="plane" text={OPEN_WHEN.leadIn} />
         <OpenWhen />
         <Interlude id="i-loud" theme="loud" variant="loud" text={GAME.leadIn} />

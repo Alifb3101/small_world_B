@@ -1,0 +1,228 @@
+.oc-wrap {
+  position: relative;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(28px + var(--safe-t)) 24px calc(24px + var(--safe-b));
+  /* the page itself never scrolls; on very short screens only this slide can */
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.oc-leaves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.oc-leaf {
+  position: absolute;
+  top: -40px;
+  line-height: 1;
+  opacity: 0.38;
+  filter: saturate(0.75) brightness(0.9);
+  animation: oc-fall linear infinite;
+  will-change: transform;
+}
+@keyframes oc-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(18px, 28svh, 0) rotate(70deg);
+  }
+  50% {
+    transform: translate3d(-14px, 56svh, 0) rotate(150deg);
+  }
+  75% {
+    transform: translate3d(16px, 84svh, 0) rotate(230deg);
+  }
+  100% {
+    transform: translate3d(0, calc(100svh + 80px), 0) rotate(320deg);
+  }
+}
+
+/* Tom chasing Jerry along the bottom: across, a breath, then back again */
+.oc-chase {
+  --tom-w: clamp(72px, 14vw, 150px);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(10px + var(--safe-b));
+  height: calc(var(--tom-w) * 0.8);
+  pointer-events: none;
+  z-index: 0;
+}
+.oc-runner {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  animation: oc-run 12s ease-in-out infinite both;
+  will-change: transform;
+}
+.oc-tom {
+  width: var(--tom-w);
+  animation-delay: 0.55s;
+}
+.oc-jerry {
+  width: calc(var(--tom-w) * 0.6);
+}
+.oc-face {
+  display: block;
+  animation: oc-face 12s linear infinite both;
+}
+.oc-tom .oc-face {
+  --face: -1;
+  animation-delay: 0.55s;
+}
+.oc-jerry .oc-face {
+  --face: 1;
+}
+.oc-runner img {
+  display: block;
+  width: 100%;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.45)) brightness(0.9) saturate(0.9);
+  animation: tx-hop 0.22s ease-in-out infinite alternate;
+}
+@keyframes oc-run {
+  0% {
+    transform: translateX(-35vw);
+  }
+  32%,
+  50% {
+    transform: translateX(115vw);
+  }
+  82%,
+  100% {
+    transform: translateX(-35vw);
+  }
+}
+@keyframes oc-face {
+  0%,
+  40.9% {
+    transform: scaleX(var(--face));
+  }
+  41%,
+  100% {
+    transform: scaleX(calc(var(--face) * -1));
+  }
+}
+
+.oc-head {
+  position: relative;
+  z-index: 1;
+  flex: none;
+}
+.oc-title {
+  font-size: clamp(26px, min(7.6vw, 6svh), 52px);
+  max-width: 16ch;
+  margin-top: 10px;
+}
+
+.oc-body {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(14px, 3svh, 28px);
+  padding-block: clamp(16px, 4svh, 40px);
+}
+.oc-page {
+  width: min(100%, 720px);
+  transition:
+    opacity 0.7s ease,
+    filter 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.oc-page.is-leaving {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(-10px);
+}
+
+.oc-lines {
+  display: grid;
+  gap: clamp(8px, 1.8svh, 16px);
+}
+.oc-lines .tseq__line {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 330;
+  font-size: clamp(16px, min(5.2vw, 3.4svh), 28px);
+  line-height: 1.3;
+  color: var(--cream-2);
+}
+.oc-lines .tseq__line.is-big {
+  font-size: clamp(22px, min(8vw, 5.6svh), 50px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+}
+.oc-lines .tseq__line.is-past {
+  opacity: 0.5;
+}
+.oc-wrap.is-done .oc-lines .tseq__line:last-child {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.oc-dots {
+  display: flex;
+  gap: 6px;
+}
+.oc-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(246, 236, 217, 0.18);
+  transition:
+    background 0.6s ease,
+    width 0.6s ease;
+}
+.oc-dots i.is-past {
+  background: rgba(243, 207, 138, 0.45);
+}
+.oc-dots i.is-on {
+  width: 18px;
+  border-radius: 3px;
+  background: var(--gold);
+}
+
+.oc-cta {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  justify-content: center;
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.oc-cta.is-soft {
+  opacity: 0.45;
+}
+.oc-cta.is-in {
+  opacity: 1;
+}
+
+@media (min-width: 900px) {
+  .oc-wrap {
+    padding-left: 8vw;
+    padding-right: 8vw;
+  }
+}
+
+/* short landscape phones: tighter top so the text gets the room */
+@media (max-height: 480px) and (orientation: landscape) {
+  .oc-wrap {
+    padding-top: calc(16px + var(--safe-t));
+    padding-bottom: calc(12px + var(--safe-b));
+  }
+  .oc-title {
+    margin-top: 4px;
+  }
+}

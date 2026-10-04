@@ -1,7 +1,8 @@
 .me {
+  --me-pad: 22px;
   position: relative;
   min-height: 100svh;
-  padding: calc(40px + var(--safe-t)) 22px calc(36px + var(--safe-b));
+  padding: calc(40px + var(--safe-t)) var(--me-pad) calc(36px + var(--safe-b));
   display: flex;
   flex-direction: column;
 }
@@ -27,11 +28,20 @@
   min-height: 0;
   margin-top: 8px;
 }
+.me-track {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
 .me-arrow {
   position: absolute;
   z-index: 4;
-  top: 46%;
-  translate: 0 -80%;
+  /* center on the circles, halfway between the staggered rows */
+  top: calc(16px + min(52vw, 200px) / 2 + 9px);
+  translate: 0 -50%;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -45,10 +55,10 @@
   transition: opacity 0.3s ease, transform 0.25s ease;
 }
 .me-arrow--prev {
-  left: 8px;
+  left: -8px;
 }
 .me-arrow--next {
-  right: 8px;
+  right: -8px;
 }
 .me-arrow::before {
   content: '';
@@ -77,7 +87,7 @@
   align-items: center;
   min-width: 0;
   min-height: 0;
-  margin: 0 -22px;
+  margin: 0;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: none;
@@ -109,7 +119,7 @@
   display: flex;
   align-items: flex-start;
   gap: 22px;
-  padding: 16px 22px 28px;
+  padding: 16px 40px 28px;
 }
 .portal {
   flex: 0 0 auto;
@@ -482,21 +492,15 @@
 
 @media (min-width: 900px) {
   .me {
-    padding: 70px 8vw 60px;
+    --me-pad: 8vw;
+    padding: 70px var(--me-pad) 60px;
   }
-  .me-scroll {
-    margin-left: -8vw;
-    margin-right: -8vw;
-  }
-  .me-arrow--prev {
-    left: 18px;
-  }
-  .me-arrow--next {
-    right: 18px;
+  .me-arrow {
+    top: calc(20px + min(18vw, 220px) / 2 + 11px);
   }
   .me-portals {
     gap: 36px;
-    padding: 20px 8vw 40px;
+    padding: 20px 48px 40px;
   }
   .portal {
     width: min(18vw, 220px);

@@ -440,43 +440,45 @@ export default function MusicEscape() {
         </header>
 
         <div className="me-row">
-          <button
-            type="button"
-            className="me-arrow me-arrow--prev"
-            aria-label="Scroll songs back"
-            disabled={scrollEnds.start}
-            onPointerDown={holdArrow(-1)}
-            data-nofx
-          />
-          <div className="me-scroll" ref={scroller}>
-            <div className="me-portals">
-              {MOODS.map((s, i) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`portal portal--${s.world} ${song === s.id ? 'is-playing' : ''}`}
-                  style={{ '--i': i }}
-                  onClick={(e) => open(s, e.currentTarget.querySelector('.portal__win').getBoundingClientRect())}
-                  data-nofx
-                >
-                  <span className="portal__win">
-                    <span className="portal__scene" />
-                    <span className="portal__glint" />
-                  </span>
-                  <span className="portal__title">{s.title}</span>
-                  <span className="portal__mood">{s.mood}</span>
-                </button>
-              ))}
+          <div className="me-track">
+            <button
+              type="button"
+              className="me-arrow me-arrow--prev"
+              aria-label="Scroll songs back"
+              disabled={scrollEnds.start}
+              onPointerDown={holdArrow(-1)}
+              data-nofx
+            />
+            <div className="me-scroll" ref={scroller}>
+              <div className="me-portals">
+                {MOODS.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`portal portal--${s.world} ${song === s.id ? 'is-playing' : ''}`}
+                    style={{ '--i': i }}
+                    onClick={(e) => open(s, e.currentTarget.querySelector('.portal__win').getBoundingClientRect())}
+                    data-nofx
+                  >
+                    <span className="portal__win">
+                      <span className="portal__scene" />
+                      <span className="portal__glint" />
+                    </span>
+                    <span className="portal__title">{s.title}</span>
+                    <span className="portal__mood">{s.mood}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+            <button
+              type="button"
+              className="me-arrow me-arrow--next"
+              aria-label="Scroll songs forward"
+              disabled={scrollEnds.end}
+              onPointerDown={holdArrow(1)}
+              data-nofx
+            />
           </div>
-          <button
-            type="button"
-            className="me-arrow me-arrow--next"
-            aria-label="Scroll songs forward"
-            disabled={scrollEnds.end}
-            onPointerDown={holdArrow(1)}
-            data-nofx
-          />
         </div>
 
         <div className="me-foot">
@@ -487,7 +489,7 @@ export default function MusicEscape() {
           >
             {MUSIC.surpriseButton}
           </MagneticButton>
-          <MagneticButton variant="link" onClick={() => goTo('tomjerry', 'cartoon')}>
+          <MagneticButton variant="link" onClick={() => goTo('october', 'cartoon')}>
             {MUSIC.next}
           </MagneticButton>
         </div>
