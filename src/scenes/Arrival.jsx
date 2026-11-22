@@ -87,13 +87,13 @@ export default function Arrival() {
           <div className="arr-halo" />
           <div className="arr-light" />
           <Character
-            name="together-lazy-2"
+            name="doraemon-v2"
             className="arr-art"
             idle="breathe"
             eager
             shadow={false}
             onClick={poke}
-            alt="Tom and Jerry, lying around, waiting for you"
+            alt="Doraemon, waiting for you"
           />
           <div className="arr-intro">
             <AnimatedText as="p" text={ARRIVAL.intro[0]} play={step >= 1} className="arr-line" stagger={0.06} />

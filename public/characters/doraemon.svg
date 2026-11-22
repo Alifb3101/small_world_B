@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="400" height="480">
+  <!-- Body -->
+  <ellipse cx="200" cy="310" rx="130" ry="110" fill="#00aadd"/>
+  <!-- White belly -->
+  <ellipse cx="200" cy="330" rx="90" ry="80" fill="#f5f5f0"/>
+  <!-- Head -->
+  <circle cx="200" cy="170" r="130" fill="#00aadd"/>
+  <!-- Face white area -->
+  <ellipse cx="200" cy="195" rx="100" ry="85" fill="#f5f5f0"/>
+  <!-- Eyes -->
+  <circle cx="165" cy="148" r="28" fill="white"/>
+  <circle cx="235" cy="148" r="28" fill="white"/>
+  <circle cx="171" cy="152" r="16" fill="#111"/>
+  <circle cx="241" cy="152" r="16" fill="#111"/>
+  <circle cx="176" cy="147" r="6" fill="white"/>
+  <circle cx="246" cy="147" r="6" fill="white"/>
+  <!-- Nose -->
+  <circle cx="200" cy="188" r="18" fill="#e63535"/>
+  <!-- Mouth line -->
+  <line x1="200" y1="206" x2="200" y2="230" stroke="#555" stroke-width="2.5"/>
+  <!-- Smile -->
+  <path d="M 148 230 Q 200 268 252 230" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Whiskers left -->
+  <line x1="90" y1="210" x2="168" y2="215" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <line x1="90" y1="225" x2="168" y2="225" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <line x1="90" y1="240" x2="168" y2="233" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <!-- Whiskers right -->
+  <line x1="310" y1="210" x2="232" y2="215" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <line x1="310" y1="225" x2="232" y2="225" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <line x1="310" y1="240" x2="232" y2="233" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  <!-- Collar/scarf -->
+  <rect x="100" y="274" width="200" height="22" rx="11" fill="#e63535"/>
+  <!-- Bell -->
+  <circle cx="200" cy="310" r="18" fill="#f0c030"/>
+  <circle cx="200" cy="310" r="8" fill="#c89010"/>
+  <line x1="200" y1="302" x2="200" y2="318" stroke="#8a6000" stroke-width="2"/>
+  <line x1="192" y1="310" x2="208" y2="310" stroke="#8a6000" stroke-width="2"/>
+  <!-- Pocket -->
+  <path d="M 148 350 Q 148 400 200 405 Q 252 400 252 350" fill="none" stroke="#bbb" stroke-width="2.5"/>
+  <!-- Arms -->
+  <ellipse cx="90" cy="320" rx="38" ry="22" fill="#00aadd" transform="rotate(-20,90,320)"/>
+  <circle cx="68" cy="338" r="22" fill="#f5f5f0"/>
+  <ellipse cx="310" cy="320" rx="38" ry="22" fill="#00aadd" transform="rotate(20,310,320)"/>
+  <circle cx="332" cy="338" r="22" fill="#f5f5f0"/>
+  <!-- Legs -->
+  <ellipse cx="158" cy="420" rx="42" ry="22" fill="#00aadd"/>
+  <ellipse cx="158" cy="438" rx="52" ry="16" fill="#f5f5f0"/>
+  <ellipse cx="242" cy="420" rx="42" ry="22" fill="#00aadd"/>
+  <ellipse cx="242" cy="438" rx="52" ry="16" fill="#f5f5f0"/>
+  <!-- Tail -->
+  <path d="M 320 380 Q 370 350 355 310 Q 340 285 320 300" fill="none" stroke="#00aadd" stroke-width="14" stroke-linecap="round"/>
+</svg>

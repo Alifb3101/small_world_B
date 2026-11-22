@@ -24,7 +24,7 @@ export default function MiniGame({ onSong, onNext }) {
   const items = useRef([]);
   const raf = useRef(0);
   const [playing, setPlaying] = useState(false);
-  const [zainab, setZainab] = useState(0);
+  const [batul, setBatul] = useState(0);
   const [brain, setBrain] = useState(0);
   const [left, setLeft] = useState(DURATION);
   const [ended, setEnded] = useState(false);
@@ -132,7 +132,7 @@ export default function MiniGame({ onSong, onNext }) {
     b.dead = true;
     b.life = 0;
     scores.current.z += 1;
-    setZainab(scores.current.z);
+    setBatul(scores.current.z);
     setQuip(pick(GAME_QUIPS));
     const x = e.clientX;
     const y = e.clientY;
@@ -157,7 +157,7 @@ export default function MiniGame({ onSong, onNext }) {
       /* still playable, just fewer */
     }
     scores.current = { z: 0, b: 0 };
-    setZainab(0);
+    setBatul(0);
     setBrain(0);
     setLeft(DURATION);
     setEnded(false);
@@ -187,7 +187,7 @@ export default function MiniGame({ onSong, onNext }) {
         <p className="mg-score">
           {GAME.scoreBrain} <b>{brain}</b>
           <span aria-hidden="true"> · </span>
-          {GAME.scoreYou} <b className="is-gold">{zainab}</b>
+          {GAME.scoreYou} <b className="is-gold">{batul}</b>
         </p>
         {playing && (
           <p className="mg-time">
@@ -225,7 +225,7 @@ export default function MiniGame({ onSong, onNext }) {
                 {GAME.next}
               </MagneticButton>
             )}
-            <MagneticButton variant="link" onClick={onSong} sound="sparkle">
+            <MagneticButton variant="link" onClick={onSong} sound="sparkle" style={{ display: 'none' }}>
               {GAME.button}
             </MagneticButton>
           </div>

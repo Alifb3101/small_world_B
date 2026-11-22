@@ -19,7 +19,7 @@ export default function KillOverthinking() {
           </h2>
         </header>
         <Character name="tom-shocked" className="ko-tom" idle="tremble" alt="" shadow={false} />
-        <MiniGame onSong={() => goTo('music', 'tunnel')} onNext={() => goTo('daily', 'dream')} />
+        <MiniGame onSong={null} onNext={() => goTo('daily', 'dream')} />
       </div>
     </Scene>
   );

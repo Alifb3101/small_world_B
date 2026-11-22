@@ -8,7 +8,7 @@ import StoryThread from './components/StoryThread';
 import Interlude from './components/Interlude';
 import Arrival from './scenes/Arrival';
 import Overthinking from './scenes/Overthinking';
-import MusicEscape from './scenes/MusicEscape';
+// import MusicEscape from './scenes/MusicEscape';
 import OctoberTheory from './scenes/OctoberTheory';
 import OpenWhen from './scenes/OpenWhen';
 import KillOverthinking from './scenes/KillOverthinking';
@@ -20,7 +20,7 @@ import { lockScroll } from './lib/director';
 import { story } from './lib/store';
 import { ScrollTrigger } from './lib/gsap';
 import { warmAssets } from './lib/preload';
-import { MUSIC, CARTOON, OPEN_WHEN, GAME, TODAY, MESSAGE } from './data/content';
+import { CARTOON, OPEN_WHEN, GAME, TODAY, MESSAGE } from './data/content';
 
 export default function App() {
   useEffect(() => {
@@ -69,8 +69,10 @@ export default function App() {
       <main className="story">
         <Arrival />
         <Overthinking />
+        {/* Songs tab hidden
         <Interlude id="i-notes" theme="notes" variant="notes" text={MUSIC.leadIn} />
         <MusicEscape />
+        */}
         <Interlude id="i-reel" theme="reel" variant="reel" text={CARTOON.leadIn} />
         <OctoberTheory />
         <Interlude id="i-paper" theme="paper" variant="plane" text={OPEN_WHEN.leadIn} />

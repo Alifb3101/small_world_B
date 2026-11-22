@@ -44,7 +44,7 @@ function FinalContent() {
     <div className={`fc-wrap ${still ? 'is-still' : ''}`}>
       <span className="fc-moon" aria-hidden="true" />
       <span className="fc-haze" aria-hidden="true" />
-      <Character name="together-lazy-2" className="fc-art" idle={still ? 'none' : 'breathe'} shadow={false} />
+      <Character name="doremon2" className="fc-art" idle={still ? 'none' : 'breathe'} shadow={false} />
 
       <div className="fc-copy">
         <TextSequence lines={FINAL.lines} play={inView} dimPast className="fc-lines" onDone={() => setPhase(1)} />

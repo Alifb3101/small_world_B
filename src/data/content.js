@@ -27,7 +27,7 @@
  *  0. THE BROWSER TAB
  * ════════════════════════════════════════════════════════════ */
 export const SITE = {
-  title: 'A Little World for Zainab',
+  title: 'A Little World for Batul',
   description: 'A tiny place, made for you.',
 };
 
@@ -35,9 +35,9 @@ export const SITE = {
  *  1. ARRIVAL — the very first screen
  * ════════════════════════════════════════════════════════════ */
 export const ARRIVAL = {
-  corner: 'a little world for zainab', // small text in the top corner
+  corner: 'a little world for u batul', // small text in the top corner
   intro: ['A tiny place…', '…made for you.'], // appear one after another
-  title: 'Hey, Zainab.',
+  title: 'Hey, Batul.',
   subtitle: 'Your brain is doing too much again, huh?',
   button: '✨ Take me somewhere else',
 };
@@ -66,15 +66,12 @@ export const OVERTHINKING = {
   // Faint words drifting in the background.
   echoes: [
     'Am I doing enough?',
-    'Assignments deadline',
-    'chapter 7??',
-    'reply later',
-    'Journal submission',
+    'Work deadline',
     'too late?',
     'focus.',
     'what if',
     'again',
-    'Practicals',
+    'Mood Board',
     'everyone else is ahead',
     'sleep?',
   ],
@@ -209,41 +206,39 @@ export const MUSIC = {
 // pages: each [ … ] is one little screen. Its lines type in one by one,
 // then the screen fades and the next one starts. The last one stays.
 export const OCTOBER = {
-  corner: 'a little theory',
-  title: 'You Know Great October Theory 🍂',
+  corner: 'a little thought',
+  title: 'The November Theory 🍂',
   pages: [
-    [{ text: 'They say October is the second New Year of the year.', hold: 2400, big: true }],
+    [{ text: 'They say November is the month of unexpected connections.', hold: 2400, big: true }],
     [
-      { text: 'January is when we make plans, set goals, and imagine how the year is going to unfold.', hold: 1400 },
-      { text: 'But by the time October arrives, something changes.', hold: 1400 },
-      { text: 'We start looking back at everything that happened —', hold: 700 },
-      {
-        text: 'the people we met, the people we lost, the things that changed us, the dreams that came true, and the ones that didn’t.',
-        hold: 3000,
-      },
+      { text: 'By November, the year has already taught us so many things.', hold: 1400 },
+      { text: 'We have met different people, experienced unexpected moments, and collected memories we never planned for.', hold: 2200 },
+      { text: 'But sometimes, the most interesting part is the people we never expected to meet.', hold: 2600 },
     ],
-    [{ text: 'October feels like a quiet reset.', hold: 2400, big: true }],
+    [{ text: 'Some people enter your life without any grand entrance.', hold: 1800, big: true }],
     [
-      { text: 'Some people enter your life.', hold: 700 },
-      { text: 'Some people leave it.', hold: 700 },
-      { text: 'Some connections become stronger.', hold: 700 },
-      { text: 'Some suddenly make sense.', hold: 2200 },
+      { text: 'It might start with a simple conversation.', hold: 900 },
+      { text: 'A random message.', hold: 900 },
+      { text: 'A little laughter over something silly.', hold: 900 },
+      { text: 'And slowly, someone who was once a stranger becomes a familiar part of your days.', hold: 2600 },
     ],
     [
-      { text: 'And sometimes, you realize that you’ve become a completely different person from who you were in January.', hold: 1600 },
-      { text: 'Maybe that’s why October feels so different.', hold: 2400, big: true },
+      { text: 'Funny how life works, right?', hold: 1200, big: true },
+      { text: 'You never really know which conversation might turn into a beautiful memory.', hold: 1800 },
+      { text: 'Or which stranger might become someone you are genuinely glad to have met.', hold: 2600 },
     ],
     [
-      { text: 'It’s not just another month.', hold: 1000 },
-      { text: 'It’s a reminder that there are still three months left to change the story of your year.', hold: 2800, big: true },
+      { text: 'Not every connection needs to be rushed.', hold: 1200 },
+      { text: 'Some things are better when they happen naturally.', hold: 1200 },
+      { text: 'With a little patience, honesty, laughter and understanding.', hold: 2400, big: true },
     ],
     [
-      { text: 'A second beginning.', hold: 800 },
-      { text: 'A second chance.', hold: 1000 },
-      { text: 'A quiet reminder that it’s never too late to start again. 🍂✨', hold: 600, big: true },
+      { text: 'Maybe that is the beautiful thing about November.', hold: 1600 },
+      { text: 'It reminds us that even when a year is almost over, life can still surprise us with someone new.', hold: 2600 },
+      { text: 'And sometimes, meeting someone is a beautiful beginning in itself. 🍂✨', hold: 3000, big: true },
     ],
   ],
-  next: 'okay. something quieter →',
+  next: 'okay. one more little surprise →',
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -306,21 +301,23 @@ export const OPEN_WHEN = {
       ],
     },
     {
-      id: 'studying',
-      label: 'When studying feels impossible',
+      id: 'work-pressure',
+      label: 'When work gets exhausting',
       seal: '✎',
       tint: 'gold',
       video: `${CLOUD}/video/young_age.mp4`,
       body: [
-        'Okay. Close the book for five minutes.',
-        'Not forever. Just five.',
+        'Hey. Take a little pause.',
+        'I know work can get tiring sometimes.',
+        'Especially when you are away from your family and managing everything on your own.',
         '',
-        'You don’t have to finish everything.',
-        'You just have to do the next small thing.',
-        'One page. One question. One line.',
+        'I hope you are giving yourself enough time to rest, too.',
+        'Not every day has to be perfect.',
+        'Just keep doing your best, one day at a time.',
         '',
-        'Slow is still moving.',
-        'And you’re smarter than your panic says you are.',
+        'You have so many beautiful things ahead of you.',
+        'Stay strong, keep smiling and dont forget to take care of yourself.',
+        'You are doing well. ❤️'
       ],
     },
     {
@@ -342,19 +339,23 @@ export const OPEN_WHEN = {
     },
     {
       id: 'smile',
-      label: 'When you need a smile',
+      label: 'when you need smile',
       seal: '☺',
       tint: 'peach',
-      video: `${CLOUD}/video/comedy.mp4`,
+      video: `${CLOUD}/video/funny_shin.mp4`,
       body: [
-        'Fun fact: Tom has been chasing Jerry since 1940',
-        'and he still hasn’t caught him. Not once.',
+        'Okay, serious question...', 'If Doraemon offered you just ONE gadget, what would you choose?', '', 
+        'Anywhere Door? Time Machine?', 'Or maybe the Take-copter? 😂', '', 
+        'Personally, I would choose the Anywhere Door.',
+
+        'Because I am always late-latif, and honestly, this gadget would save my reputation. 😂',
         '',
-        'So whatever went wrong today?',
-        'You’re still doing better than Tom.',
+        'For you, I would choose the Take-copter.',
+        'Imagine you flying around, enjoying beautiful views, watching sunsets and exploring places from up above.',
         '',
-        'Okay, now smile. I’ll wait.',
-        '…there it is.',
+        'And knowing me, I would probably arrive late even after using the Anywhere Door. 😂',
+        '',
+        'Doraemon really needs to invent a gadget to fix my timing!'
       ],
     },
     {
@@ -386,24 +387,24 @@ export const OPEN_WHEN = {
         'I’m on your side. Obviously.',
       ],
     },
-    {
-      id: 'miss',
-      label: 'When you miss someone',
-      seal: '✉',
-      tint: 'lav',
-      video: `${CLOUD}/video/misssomeone.mp4`,
-      body: [
-        'Hey. I know you miss them.',
-        'And honestly, that’s okay.',
-        'But don’t let missing someone',
-        'make you forget your own worth.',
-        '',
-        'Your energy deserves someone',
-        'who respects you, makes time for you,',
-        'and chooses you just as much.',
-        '',
-        ],
-    },
+    // {
+    //   id: 'miss',
+    //   label: 'When you miss someone',
+    //   seal: '✉',
+    //   tint: 'lav',
+    //   video: `${CLOUD}/video/misssomeone.mp4`,
+    //   body: [
+    //     'Hey. I know you miss them.',
+    //     'And honestly, that’s okay.',
+    //     'But don’t let missing someone',
+    //     'make you forget your own worth.',
+    //     '',
+    //     'Your energy deserves someone',
+    //     'who respects you, makes time for you,',
+    //     'and chooses you just as much.',
+    //     '',
+    //   ],
+    // },
     {
       id: 'someone',
       label: 'When you just need someone',
@@ -426,10 +427,10 @@ export const OPEN_WHEN = {
   // A real envelope under the pile. It stays shut until the password.
   // password: the word she types. Capital letters don’t matter.
   secret: {
-    password: '2084',
+    password: '2386',
     whisper: 'this one stays folded',
-    title: 'Special note for Every Mood',
-    line: 'Write the Password, and it opens.',
+    title: 'Special note for You',
+    line: 'Hint :- Password Is You(4 Digit Numpin)',
     placeholder: 'Password',
     button: 'open',
     wrong: 'not this one.',
@@ -439,13 +440,14 @@ export const OPEN_WHEN = {
     secret: true,
     body: [
       'Hey. You found it.',
-       'Hope you are doing well.',
-       'This is a special note for you.',
-       'I know you are going through a lot right now.',
-       'But you are strong and you will get through it.',
-       'Maybe something happend and i am not here',
-       'but dont lost hope and dont give up on yourself.',
-       'I know you can do it, you are a strong person and you will get through it.'
+      'I just wanted to remind you that everyone has a past, and no one is perfect.',
+      'What matters to us is how we treat each other today and the kind of future we choose to build.',
+      'I dont want you to feel that you have to question everything or carrying a doubts.',
+      'I believe trust takes time, and I am not expecting you to trust me overnight.',
+      'I would rather earn your trust through my actions than ask for it through words.',
+      'I will always try to be honest, loyal and respectful towards you, and I hope we can give each other the same.',
+      'I genuinely hope we can build something beautiful, with trust, comfort and honesty at its heart.',
+      'And Most Important dont forget to Smile😊'
     ],
   },
 };
@@ -462,10 +464,10 @@ export const GAME = {
   hint: 'tap the nonsense before it multiplies.',
   skip: 'not now, skip →', // link under the start button to move on without playing
   scoreBrain: 'OVERTHINKING', // score label for the thoughts that got away
-  scoreYou: 'ZAINAB', // score label for her taps
+  scoreYou: 'BATUL', // score label for her taps
 
   // Words that fly in for her to tap.
-  words: ['WHAT IF…', 'I SHOULD…', 'BUT WHAT IF…', 'I’M BEHIND…', 'TOO LATE?', 'ONE MORE CHAPTER', 'WHAT IF THEY…', 'NOT ENOUGH'],
+  words: ['WHAT IF…', 'I SHOULD…', 'BUT WHAT IF…', 'I"M TOO TRIED', 'TOO LATE?', 'ONE MORE MOOD BOARD', 'WHAT IF THEY…', 'NOT ENOUGH'],
 
   // Pop comments (one picked at random).
   quips: ['bonk', 'gone', 'nope', 'bye', 'shh', 'next!', 'lol no', 'rude'],
@@ -473,7 +475,7 @@ export const GAME = {
   // When the time runs out:
   end: [
     { text: 'You successfully bullied your brain for 30 seconds.', hold: 1600, big: true },
-    { text: 'Honestly?', hold: 900 },
+    { text: 'Honestly', hold: 900 },
     { text: 'Your brain needs a timeout.', hold: 800 },
   ],
   button: 'or… 🎧 One song?',
@@ -493,12 +495,12 @@ export const TODAY = {
   // The site picks one by weekday: Mon study, Tue music, Wed rainy,
   // Thu sleepy, Fri chaotic, Sat & Sun lazy.
   days: {
-    study: { name: 'study day', line: 'Even Tom naps between chapters. Jerry is handling the pencil situation.' },
-    music: { name: 'music day', line: 'Today’s plan: headphones on, world off.' },
-    rainy: { name: 'rainy day', line: 'Rain outside. Blanket inside. Perfect ratio.' },
-    sleepy: { name: 'sleepy day', line: 'Forecast: heavy eyelids by eleven. Zero regrets.' },
+    study: { name: 'work day', line: 'One deadline at a time, madam. Rome wasn’t designed in a day either. 😂' },
+    music: { name: 'mood board day', line: 'Colours, textures, layouts and a hundred little ideas. Designer mode: ON!' },
+    rainy: { name: 'moody day', line: 'Grey skies, cosy weather and a window worth staring out of for a while.' },
+    sleepy: { name: 'sleepy day', line: 'Body: time to sleep. Mind: remember that one unfinished thing from three days ago. 😂' },
     chaotic: { name: 'chaotic day', line: 'It’s chaos. That’s allowed. Nobody gets caught today.' },
-    lazy: { name: 'lazy day', line: 'Doing nothing is also a valid activity.' },
+    lazy: { name: 'sunday mode', line: 'Sunday rule: no alarms, no deadlines, no responsibilities. Bas aaram karo, madam. 😂' },
   },
 };
 
@@ -531,7 +533,7 @@ export const FINAL = {
   ],
   breathe: 'Breathe.',
   button: 'I’m okay now 🌙',
-  goodnight: 'Take Care Zainab ✌️',
+  goodnight: 'Hope You Liked, Batul ✌️',
 };
 
 /* ════════════════════════════════════════════════════════════

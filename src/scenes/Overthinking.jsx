@@ -71,7 +71,7 @@ export default function Overthinking() {
         </header>
 
         {!done && (
-          <MagneticButton variant="link" className="ot-skip" onClick={() => goTo('music', 'collapse')} sound="soft" burst={false}>
+          <MagneticButton variant="link" className="ot-skip" onClick={() => goTo('october', 'collapse')} sound="soft" burst={false}>
             {OVERTHINKING.skip}
           </MagneticButton>
         )}
@@ -93,7 +93,7 @@ export default function Overthinking() {
           <div className="ot-after">
             <TextSequence lines={AFTER} play onDone={() => setCta(true)} className="ot-lines" />
             <div className={`ot-cta ${cta ? 'is-in' : ''}`}>
-              <MagneticButton onClick={() => goTo('music', 'collapse')} sound="soft">
+              <MagneticButton onClick={() => goTo('october', 'collapse')} sound="soft">
                 {OVERTHINKING.button}
               </MagneticButton>
             </div>

@@ -1,4 +1,4 @@
-# A Little World for Zainab
+# A Little World for Batul
 
 A mobile-first cinematic React experience — an interactive short film made for one person.
 

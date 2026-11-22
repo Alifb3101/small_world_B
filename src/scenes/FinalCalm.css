@@ -33,8 +33,8 @@
   pointer-events: none;
 }
 .fc-wrap {
-  /* capped by height too, so Tom and Jerry always fit under the text */
-  --art-w: min(88vw, 480px, 56svh);
+  /* doremon2.png is 900×846 (portrait) */
+  --art-w: min(72vw, 360px, 48svh);
 }
 .fc-art.char {
   position: absolute;
@@ -43,16 +43,16 @@
   bottom: 0;
   translate: -50% 0;
   z-index: 1;
-  opacity: 0.78;
+  opacity: 0.88;
 }
 .fc-art .char__img {
-  filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5)) brightness(0.82) saturate(0.8) sepia(0.08);
+  filter: drop-shadow(0 20px 36px rgba(0, 140, 210, 0.4)) drop-shadow(0 8px 18px rgba(0,0,0,0.5)) brightness(0.9) saturate(1.05);
 }
 .fc-copy {
   position: relative;
   z-index: 3;
-  /* image is 900×591 */
-  margin-bottom: calc(var(--art-w) / 1.52 + 8px);
+  /* doremon2.png is 900×846, ratio ≈ 1.064 */
+  margin-bottom: calc(var(--art-w) / 1.064 + 8px);
 }
 .fc-lines {
   display: grid;
@@ -121,8 +121,8 @@
     left: auto;
     right: 4%;
     translate: 0;
-    width: min(48vw, 640px, 95svh);
-    bottom: 6%;
+    width: min(44vw, 480px, 90svh);
+    bottom: 0;
   }
   .fc-moon {
     right: 8%;
