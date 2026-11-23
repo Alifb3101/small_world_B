@@ -56,7 +56,7 @@ export default function DailyWorld() {
           {day === 'music' && <Character name="jerry-laugh" className="dw-main dw-dance" idle="sway" shadow={false} />}
           {day === 'music' && <Character name="tom-holds-jerry" className="dw-side" idle="bob" shadow={false} />}
 
-          {day === 'rainy' && <Character name="together-lazy-2" className="dw-main" idle="breathe" shadow={false} />}
+          {day === 'rainy' && <Character name="tom-holds-jerry" className="dw-main" idle="breathe" shadow={false} />}
 
           {day === 'sleepy' && <Character name="together-lazy-2" className="dw-main" idle="breathe" shadow={false} />}
           {day === 'sleepy' && (
@@ -71,7 +71,7 @@ export default function DailyWorld() {
           {day === 'chaotic' && <Character name="chase-run" className="dw-side dw-run2" idle="none" shadow={false} />}
           {day === 'chaotic' && <Character name="jerry-dash" className="dw-tiny" idle="none" shadow={false} />}
 
-          {day === 'lazy' && <Character name="jerry-hips" className="dw-main dw-still" idle="none" shadow={false} />}
+          {day === 'lazy' && <Character name="together-hug" className="dw-main dw-still" idle="none" shadow={false} />}
 
           <div className="dw-ground" />
           <span className="dw-glass" />

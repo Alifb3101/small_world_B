@@ -495,7 +495,7 @@ export const TODAY = {
   // The site picks one by weekday: Mon study, Tue music, Wed rainy,
   // Thu sleepy, Fri chaotic, Sat & Sun lazy.
   days: {
-    study: { name: 'work day', line: 'One deadline at a time, madam. Rome wasn’t designed in a day either. 😂' },
+    study: { name: 'work day', line: 'Work hard but take a break before your brain submits its resignation. 🤣' },
     music: { name: 'mood board day', line: 'Colours, textures, layouts and a hundred little ideas. Designer mode: ON!' },
     rainy: { name: 'moody day', line: 'Grey skies, cosy weather and a window worth staring out of for a while.' },
     sleepy: { name: 'sleepy day', line: 'Body: time to sleep. Mind: remember that one unfinished thing from three days ago. 😂' },
