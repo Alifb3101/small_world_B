@@ -141,6 +141,15 @@ export default function MusicEscape() {
     const out = root.querySelector(`[data-world="${leaving}"]`);
     const inn = root.querySelector(`[data-world="${world}"]`);
     const leak = stage.current.querySelector('.me-leak');
+    
+    // Guard: if elements don't exist, skip animation
+    if (!out || !inn || !leak) {
+      console.warn('World swap animation skipped: missing elements', { out: !!out, inn: !!inn, leak: !!leak });
+      setLeaving(null);
+      busy.current = false;
+      return;
+    }
+    
     const d = dirRef.current;
     const dur = REDUCED ? 0.25 : 1.15;
     const tl = gsap.timeline({
@@ -197,8 +206,8 @@ export default function MusicEscape() {
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
+    
   }, [isPlaying, world]);
-
   // the page underneath shouldn't move or render while a world is open
   useEffect(() => {
     if (!world) return;
@@ -236,6 +245,7 @@ export default function MusicEscape() {
     sfx.whoosh(1.3);
     buzz(10);
     setUiIn(false);
+    console.log('OPEN: setting world to', t.world, 'for track', t.id, 'track object:', t);
     setWorld(t.world);
     setTrack(t);
     playSong(t);
@@ -254,6 +264,7 @@ export default function MusicEscape() {
     dirRef.current = dir;
     sfx.whoosh(0.9);
     setLeaving(from);
+    console.log('GO: setting world to', t.world, 'for track', t.id);
     setWorld(t.world);
   };
 
@@ -508,11 +519,14 @@ export default function MusicEscape() {
           >
             <div className="me-iris" ref={iris}>
               <div className="me-inner" ref={inner}>
-                {[leaving, world].filter(Boolean).map((id) => (
-                  <div key={id} className="mw-layer" data-world={id}>
-                    <MusicWorld id={id} />
-                  </div>
-                ))}
+                {[leaving, world].filter(Boolean).map((id) => {
+                  console.log('WORLD ID', id, 'track', track?.id, 'track.world', track?.world);
+                  return (
+                    <div key={id} className="mw-layer" data-world={id}>
+                      <MusicWorld id={id} />
+                    </div>
+                  );
+                })}
                 <span className="me-leak" aria-hidden="true" />
               </div>
             </div>
@@ -522,10 +536,10 @@ export default function MusicEscape() {
                 <span className="eyebrow">
                   {isLoading ? MUSIC.loading : isPlaying ? MUSIC.nowPlaying : MUSIC.paused}
                 </span>
-                <AnimatedText as="h3" text={current.title} className="me-song h-serif" stagger={0.03} play={uiIn} />
+                <AnimatedText as="h3" text={current?.title || ''} className="me-song h-serif" stagger={0.03} play={uiIn} />
                 <AnimatedText
                   as="p"
-                  text={current.line}
+                  text={current?.line || ''}
                   split="words"
                   variant="soft"
                   delay={0.35}

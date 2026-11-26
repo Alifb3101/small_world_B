@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ─────────────────────────────────────────────────────────────
  *  ALL THE WORDS IN THE LITTLE WORLD LIVE IN THIS ONE FILE.
  *  It reads top to bottom in the same order she sees it.
@@ -124,7 +124,7 @@ export const MUSIC = {
       id: 'us',
       when: 'our friendship song',
       title: 'Friendship over everything ',
-      line: 'Every inside joke. Every late reply. Every “same.” This one is ours.',
+      line: 'Sometimes, the most beautiful stories begin with friendship. After all, every journey starts with a first step.',
       file: `${CLOUD}/friendship_song1.mp3`,
       world: 'train',
     },
@@ -134,15 +134,15 @@ export const MUSIC = {
       title: 'Rahat’s World',
       line: 'One voice, and the whole sky goes quiet to listen.',
       file: `${CLOUD}/rahat_fatehi.mp3`,
-      world: 'sky',
+      world: 'oldmemory',
     },
     {
       id: 'sad',
       when: 'play when you’re sad',
       title: 'Keep Fighting, Queen',
-      line: 'Not here to fix it. Just here to sit with you until it passes.',
+      line: 'Not here to fix it. Just here to sit with you until it passes.#alwayswithyou',
       file: `${CLOUD}/ReelAudio-54455.mp3`,
-      world: 'room',
+      world: 'fightqueen',
     },
     {
       id: 'future',
@@ -166,13 +166,13 @@ export const MUSIC = {
       title: 'English Beauty',
       line: 'Different language. Exact same feeling.',
       file: `${CLOUD}/english.mp3`,
-      world: 'city',
+      world: 'stepbyside',
     },
     {
       id: 'sukoon',
       when: 'when you overthink',
       title: 'Sukoon',
-      line: 'Shh. The thoughts can wait outside. Breathe with this one.',
+      line: 'Shhh… let the thoughts wait. Just breathe, relax, and let the overthinking fade away for a while',
       file: `${CLOUD}/sukoongirl.mp3`,
       world: 'room',
     },
@@ -183,6 +183,14 @@ export const MUSIC = {
       line: 'Loud. Chaotic. Perfect. Volume all the way up.',
       file: `${CLOUD}/mixgang.mp3`,
       world: 'train',
+    },
+    {
+      id: 'neverending',
+      when: 'when distance feels too far',
+      title: 'The NeverEnding Story',
+      line: 'Two voices. Two Diffrent City. One signal connecting them across the sky.',
+      file: `${CLOUD}/neverending.mp3`,
+      world: 'neverending',
     },
   ],
 
@@ -519,7 +527,7 @@ export const MESSAGE = {
     { text: 'if your brain starts being annoying again…', hold: 1500 },
     { text: 'you know where to come.', hold: 800, big: true },
   ],
-  next: 'okay → ???',
+  next: 'okay → ??? Next',
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -595,6 +603,58 @@ const BACKUP_TUNES = {
     cutoff: 3000,
     decay: 1.6,
   },
+  neverending: {
+    bpm: 75,
+    chords: [
+      [60, 64, 67, 72],
+      [57, 60, 64, 69],
+      [55, 59, 62, 67],
+      [52, 55, 60, 64],
+    ],
+    pattern: [0, 2, 1, 3, 2, 1, 3, 2],
+    lead: 'sine',
+    cutoff: 2800,
+    decay: 1.3,
+  },
+  stepbyside: {
+    bpm: 68,
+    chords: [
+      [60, 64, 67, 71],
+      [55, 59, 62, 67],
+      [57, 60, 64, 69],
+      [53, 57, 60, 64],
+    ],
+    pattern: [0, 2, 1, 3, 2, 0, 1, 2],
+    lead: 'sine',
+    cutoff: 2600,
+    decay: 1.5,
+  },
+  oldmemory: {
+    bpm: 62,
+    chords: [
+      [57, 60, 64, 67],
+      [53, 57, 60, 64],
+      [55, 59, 62, 66],
+      [50, 53, 57, 60],
+    ],
+    pattern: [0, null, 2, null, 1, null, 3, 2],
+    lead: 'sine',
+    cutoff: 2200,
+    decay: 1.8,
+  },
+  fightqueen: {
+    bpm: 70,
+    chords: [
+      [60, 64, 67, 72],
+      [57, 60, 64, 69],
+      [62, 65, 69, 74],
+      [55, 59, 62, 67],
+    ],
+    pattern: [0, 2, 1, 3, 0, 2, 3, 1],
+    lead: 'triangle',
+    cutoff: 2800,
+    decay: 1.1,
+  },
 };
 
 export const SONGS = MUSIC.songs.map((s) => ({ ...s, world: s.id, synth: BACKUP_TUNES[s.id] }));
@@ -618,3 +678,95 @@ export const PLAYLIST = [
     synth: BACKUP_TUNES[s.world],
   })),
 ];
+
+/* ════════════════════════════════════════════════════════════
+ *  7.5 BLUEPRINT OF US — the floor plan of memories
+ * ════════════════════════════════════════════════════════════ */
+// EDIT ME: Replace placeholder text with real memories and messages
+export const blueprintOfUs = {
+  eyebrow: 'designed for you',
+  title: 'Blueprint of',
+  titleAccent: 'Us.', // shown in italic
+  subtitle: 'Every room holds a memory.',
+
+  theme: {
+    bg: '#0a1428', // deep blueprint navy
+    grid: '#1a2844', // faint drafting grid
+    line: '#d4c4a8', // warm cream lines
+    accent: '#f3cf8a', // soft gold
+    highlight: '#e8b4a0', // muted rose
+  },
+
+  titleBlock: {
+    project: 'A Small World',
+    drawnFor: 'For Batul',
+    date: 'November 2024',
+    sheet: 'Sheet 01',
+  },
+
+  // EDIT ME: Replace with real room memories
+  // mood options: 'golden' | 'rain' | 'candle' | 'morning' | 'midnight'
+  rooms: [
+    {
+      id: 'living',
+      name: 'Living Room',
+      title: 'First Conversations',
+      note: 'Where words turned into laughter, and a stranger became a friend.',
+      date: 'November',
+      mood: 'golden',
+      // image: '/characters/together-lazy.png', // optional
+    },
+    {
+      id: 'kitchen',
+      name: 'Kitchen',
+      title: 'Shared Moments',
+      note: 'Late-night talks over virtual chai. Distance feels smaller here.',
+      mood: 'candle',
+    },
+    {
+      id: 'balcony',
+      name: 'Balcony',
+      title: 'Quiet Evenings',
+      note: 'Sunsets watched from different cities, same time, same sky.',
+      mood: 'morning',
+    },
+    {
+      id: 'bedroom',
+      name: 'Bedroom',
+      title: 'Safe Space',
+      note: 'Where overthinking gets talked down, and worries feel lighter.',
+      date: 'Always',
+      mood: 'midnight',
+    },
+    {
+      id: 'study',
+      name: 'Study',
+      title: 'Creative Energy',
+      note: 'Mood boards, design dreams, and ideas that deserve to exist.',
+      mood: 'golden',
+    },
+    {
+      id: 'entrance',
+      name: 'Entrance',
+      title: 'Open Door',
+      note: 'You are always welcome here. No invitation needed.',
+      mood: 'rain',
+    },
+  ],
+
+  // EDIT ME: Replace with meaningful color memories
+  palette: [
+    { name: 'Sunday Evening Gold', code: 'BP-014', hex: '#f3cf8a', caption: 'warm & easy', memory: 'The color of lazy conversations that go nowhere and everywhere.' },
+    { name: 'First Laugh Cream', code: 'BP-002', hex: '#f6ecd9', caption: 'soft & steady', memory: 'That moment when a joke landed perfectly, and everything felt lighter.' },
+    { name: 'Rainy Day Blue', code: 'BP-028', hex: '#6a8aaa', caption: 'calm & close', memory: 'Grey skies, warm blankets, and messages that make distance disappear.' },
+    { name: 'Designer Focus', code: 'BP-041', hex: '#8a7a9a', caption: 'creative & alive', memory: 'The quiet intensity when inspiration strikes and nothing else matters.' },
+    { name: 'Midnight Comfort', code: 'BP-056', hex: '#3a2a4a', caption: 'safe & seen', memory: 'Late hours when honesty comes easier and words mean more.' },
+    { name: 'Morning Promise', code: 'BP-007', hex: '#e8c4b4', caption: 'gentle & new', memory: 'Every new day is another chance to build something beautiful together.' },
+  ],
+
+  finale: 'Every memory matters. Every room tells a story. This is ours.',
+  hint: 'tap a room to open it',
+  progress: 'rooms discovered', // "3 / 6 rooms discovered"
+  close: 'close',
+  next: "it's getting late →",
+};
